@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">LiveTextBackground</string>
+    <string name="app_desc">Allows a live text background with customizable features like collision, etc.</string>
     <string name="action_settings">Settings</string>
-
+    <string name="action_set_background">Set Background</string>
 </resources>
