@@ -1,5 +1,7 @@
 package steve4448.livetextbackground.background;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import steve4448.livetextbackground.background.object.TextObject;
@@ -22,7 +24,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private SurfaceHolder holder;
 		private Paint paint = new Paint();
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
-		private Thread logicThread;
+		private Timer logicTimer;
 		private final Handler paintHandler = new Handler();
 		private final Runnable paintRunnable = new Runnable() {
 			@Override
@@ -55,7 +57,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private void setupLogicHandler(boolean on) {
 			if(!handlerBusy && on) {
 				handlerBusy = true;
-				logicThread = new Thread() {
+				logicTimer = new Timer();
+				logicTimer.schedule(new TimerTask() {
 					@Override
 					public void run() {
 						try {
@@ -66,17 +69,18 @@ public class LiveTextBackgroundService extends WallpaperService {
 						} catch(InterruptedException e) {
 						}
 					}
-				};
-				logicThread.start();
-				paintHandler.post(paintRunnable);
+				}, DESIRED_FPS, DESIRED_FPS);
 			} else if(!on) {
 				handlerBusy = false;
-				logicThread.interrupt();
+				if(logicTimer != null)
+					logicTimer.cancel();
+				logicTimer = null;
 				paintHandler.removeCallbacks(paintRunnable);
 			}
 		}
 		
 		private void logic() {
+			//long startTime = System.currentTimeMillis();
 			if((int)(Math.random() * 22) == 1 || textObj.size() < 3)
 				textObj.add(new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
 			for(TextObject t : textObj) {
@@ -96,9 +100,12 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(t.y > getDesiredMinimumHeight() + (t.size * 2) || t.x > getDesiredMinimumWidth() || t.x < 0 - paint.measureText(t.text))
 					textObj.remove(t);
 			}
+			paintHandler.post(paintRunnable);
+			//System.out.println("Finished logic in " + (System.currentTimeMillis() - startTime) + "ms.");
 		}
 		
 		private void draw() {
+			//long startTime = System.currentTimeMillis();
 			if(holder == null)
 				return;
 			Canvas canvas = holder.lockCanvas();
@@ -112,7 +119,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 			} finally {
 				holder.unlockCanvasAndPost(canvas);
 			}
-			paintHandler.postDelayed(paintRunnable, DESIRED_FPS);
+			//System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 5-6ms on my device (LGP960).
 		}
 	}
 }
