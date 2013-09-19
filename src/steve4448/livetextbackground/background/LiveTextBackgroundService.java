@@ -25,6 +25,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private Paint paint = new Paint();
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private Timer logicTimer;
+		private TimerTask logicTimerTask;
 		private final Handler paintHandler = new Handler();
 		private final Runnable paintRunnable = new Runnable() {
 			@Override
@@ -58,23 +59,27 @@ public class LiveTextBackgroundService extends WallpaperService {
 			if(!handlerBusy && on) {
 				handlerBusy = true;
 				logicTimer = new Timer();
-				logicTimer.schedule(new TimerTask() {
+				logicTimer.schedule(logicTimerTask = new TimerTask() {
 					@Override
 					public void run() {
 						try {
-							while(true) {
-								logic();
-								Thread.sleep(DESIRED_FPS);
-							}
+							logic();
+							Thread.sleep(DESIRED_FPS);
 						} catch(InterruptedException e) {
 						}
 					}
 				}, DESIRED_FPS, DESIRED_FPS);
-			} else if(!on) {
+			} else if(handlerBusy && !on) {
 				handlerBusy = false;
-				if(logicTimer != null)
+				if(logicTimer != null) {
+					if(logicTimerTask != null) {
+						logicTimerTask.cancel();
+						logicTimerTask = null;
+					}
 					logicTimer.cancel();
-				logicTimer = null;
+					logicTimer.purge();
+					logicTimer = null;
+				}
 				paintHandler.removeCallbacks(paintRunnable);
 			}
 		}
