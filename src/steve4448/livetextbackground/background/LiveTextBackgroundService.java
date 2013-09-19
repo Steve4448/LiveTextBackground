@@ -1,5 +1,8 @@
 package steve4448.livetextbackground.background;
 
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import steve4448.livetextbackground.background.object.TextObject;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,7 +22,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 	private class LiveTextBackgroundEngine extends Engine {
 		private SurfaceHolder holder;
 		private Paint paint = new Paint();
-		private TextObject[] textObj;
+		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private final Handler logicHandler = new Handler();
 		private final Runnable logicRunnable = new Runnable() {
 			@Override
@@ -32,8 +35,6 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
 			paint.setStyle(Paint.Style.FILL);
-			textObj = new TextObject[100];
-			//setupLogicHandler(true);
 		}
 		
 		@Override
@@ -66,29 +67,23 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private void draw() {
 			if(holder == null)
 				return;
-			System.out.println("Drawing...");
 			Canvas canvas = holder.lockCanvas();
 			try {
-				if((int)(Math.random() * 25) == 1)
-					for(int i = 0; i < textObj.length; i++)
-						if(textObj[i] == null) {
-							textObj[i] = new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255)));
-							break;
-						}
+				if((int)(Math.random() * 22) == 1 || textObj.size() < 3)
+					textObj.add(new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
 				canvas.drawColor(Color.DKGRAY);
-				for(int i = 0; i < textObj.length; i++) {
-					if(textObj[i] == null)
-						continue;
+				for(TextObject t : textObj) {
 					//Text Object Logic
-					textObj[i].y += (textObj[i].velocityY+=0.1);
+					t.y += (t.velocityY+=0.1);
+					
 					//Text Object Drawing
-					paint.setColor(textObj[i].color);
-					paint.setTextSize(textObj[i].size);
-					int maxXPosition = (int)(getDesiredMinimumWidth() - paint.measureText(textObj[i].text));
-					if(textObj[i].x > maxXPosition) textObj[i].x = maxXPosition;
-					canvas.drawText(textObj[i].text, (int)textObj[i].x, (int)textObj[i].y, paint);
-					if(textObj[i].y > getDesiredMinimumHeight() + (textObj[i].size * 2))
-						textObj[i] = null;
+					paint.setColor(t.color);
+					paint.setTextSize(t.size);
+					int maxXPosition = (int)(getDesiredMinimumWidth() - paint.measureText(t.text));
+					if(t.x > maxXPosition) t.x = maxXPosition;
+					canvas.drawText(t.text, (int)t.x, (int)t.y, paint);
+					if(t.y > getDesiredMinimumHeight() + (t.size * 2))
+						textObj.remove(t);
 						
 				}
 			} finally {
