@@ -1,6 +1,5 @@
 package steve4448.livetextbackground.background;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import steve4448.livetextbackground.background.object.TextObject;
@@ -15,16 +14,17 @@ public class LiveTextBackgroundService extends WallpaperService {
 	public static final int DESIRED_FPS = 1000/30;
 	
 	@Override
-    public Engine onCreateEngine() {
-	    return new LiveTextBackgroundEngine();
-    }
+	public Engine onCreateEngine() {
+		return new LiveTextBackgroundEngine();
+	}
 	
 	private class LiveTextBackgroundEngine extends Engine {
 		private SurfaceHolder holder;
 		private Paint paint = new Paint();
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
-		private final Handler logicHandler = new Handler();
-		private final Runnable logicRunnable = new Runnable() {
+		private Thread logicThread;
+		private final Handler paintHandler = new Handler();
+		private final Runnable paintRunnable = new Runnable() {
 			@Override
 			public void run() {
 				draw();
@@ -40,13 +40,11 @@ public class LiveTextBackgroundService extends WallpaperService {
 		@Override
 		public void onSurfaceCreated(SurfaceHolder holder) {
 			this.holder = holder;
-			setupLogicHandler(true);
 		}
 		
 		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
 			this.holder = null;
-			setupLogicHandler(false);
 		}
 		
 		@Override
@@ -56,11 +54,47 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private void setupLogicHandler(boolean on) {
 			if(!handlerBusy && on) {
-				logicHandler.post(logicRunnable);
 				handlerBusy = true;
+				logicThread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							while(true) {
+								logic();
+								Thread.sleep(DESIRED_FPS);
+							}
+						} catch(InterruptedException e) {
+						}
+					}
+				};
+				logicThread.start();
+				paintHandler.post(paintRunnable);
 			} else if(!on) {
-				logicHandler.removeCallbacks(logicRunnable);
 				handlerBusy = false;
+				logicThread.interrupt();
+				paintHandler.removeCallbacks(paintRunnable);
+			}
+		}
+		
+		private void logic() {
+			if((int)(Math.random() * 22) == 1 || textObj.size() < 3)
+				textObj.add(new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
+			for(TextObject t : textObj) {
+				//Text Object Logic
+				if(t.velocityX > 0) {
+					t.velocityX-=0.01;
+					if(t.velocityX < 0)
+						t.velocityX = 0;
+				}
+				if(t.velocityX < 0) {
+					t.velocityX+=0.01;
+					if(t.velocityX > 0)
+						t.velocityX = 0;
+				}
+				t.x += t.velocityX;
+				t.y += (t.velocityY+=0.1);
+				if(t.y > getDesiredMinimumHeight() + (t.size * 2) || t.x > getDesiredMinimumWidth() || t.x < 0 - paint.measureText(t.text))
+					textObj.remove(t);
 			}
 		}
 		
@@ -69,27 +103,16 @@ public class LiveTextBackgroundService extends WallpaperService {
 				return;
 			Canvas canvas = holder.lockCanvas();
 			try {
-				if((int)(Math.random() * 22) == 1 || textObj.size() < 3)
-					textObj.add(new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
 				canvas.drawColor(Color.DKGRAY);
 				for(TextObject t : textObj) {
-					//Text Object Logic
-					t.y += (t.velocityY+=0.1);
-					
-					//Text Object Drawing
 					paint.setColor(t.color);
 					paint.setTextSize(t.size);
-					int maxXPosition = (int)(getDesiredMinimumWidth() - paint.measureText(t.text));
-					if(t.x > maxXPosition) t.x = maxXPosition;
 					canvas.drawText(t.text, (int)t.x, (int)t.y, paint);
-					if(t.y > getDesiredMinimumHeight() + (t.size * 2))
-						textObj.remove(t);
-						
 				}
 			} finally {
 				holder.unlockCanvasAndPost(canvas);
 			}
-			logicHandler.postDelayed(logicRunnable, DESIRED_FPS);
+			paintHandler.postDelayed(paintRunnable, DESIRED_FPS);
 		}
 	}
 }
