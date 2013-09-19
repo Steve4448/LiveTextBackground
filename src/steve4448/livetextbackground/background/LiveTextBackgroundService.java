@@ -72,7 +72,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if((int)(Math.random() * 25) == 1)
 					for(int i = 0; i < textObj.length; i++)
 						if(textObj[i] == null) {
-							textObj[i] = new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), 0x00000055 + (int)(Math.random() * 0xFFFFFF55));
+							textObj[i] = new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255)));
 							break;
 						}
 				canvas.drawColor(Color.DKGRAY);
@@ -81,10 +81,11 @@ public class LiveTextBackgroundService extends WallpaperService {
 						continue;
 					//Text Object Logic
 					textObj[i].y += (textObj[i].velocityY+=0.1);
-					
 					//Text Object Drawing
 					paint.setColor(textObj[i].color);
 					paint.setTextSize(textObj[i].size);
+					int maxXPosition = (int)(getDesiredMinimumWidth() - paint.measureText(textObj[i].text));
+					if(textObj[i].x > maxXPosition) textObj[i].x = maxXPosition;
 					canvas.drawText(textObj[i].text, (int)textObj[i].x, (int)textObj[i].y, paint);
 					if(textObj[i].y > getDesiredMinimumHeight() + (textObj[i].size * 2))
 						textObj[i] = null;

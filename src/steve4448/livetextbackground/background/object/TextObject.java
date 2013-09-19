@@ -16,6 +16,7 @@ public class TextObject {
 		this.text = text;
 		this.x = x;
 		this.y = y;
+		this.velocityY = (Math.random() * 2);
 		this.size = size;
 		this.color = color;
 	}
