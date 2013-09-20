@@ -24,7 +24,6 @@ public class LiveTextBackgroundService extends WallpaperService {
 	}
 	
 	private class LiveTextBackgroundEngine extends Engine {
-		private SurfaceHolder holder;
 		private Paint paint = new Paint();
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private CopyOnWriteArrayList<ExplosionParticle> textExplObj = new CopyOnWriteArrayList<ExplosionParticle>();
@@ -45,13 +44,25 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		@Override
+		public void onCreate(SurfaceHolder holder) {
+			super.onCreate(holder);
+		}
+		
+		@Override
+		public void onDestroy() {
+			super.onDestroy();
+			setupLogicHandler(false);
+		}
+		
+		@Override
 		public void onSurfaceCreated(SurfaceHolder holder) {
-			this.holder = holder;
+			super.onSurfaceCreated(holder);
 		}
 		
 		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
-			this.holder = null;
+			super.onSurfaceDestroyed(holder);
+			setupLogicHandler(false);
 		}
 		
 		@Override
@@ -157,26 +168,30 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private void draw() {
 			//long startTime = System.currentTimeMillis();
-			if(holder == null)
-				return;
-			Canvas canvas = holder.lockCanvas();
-			try {
-				canvas.drawColor(Color.DKGRAY);
-				for(ExplosionParticle p : textExplObj)
-					if(p != null) {
-						paint.setColor((int)p.color);
-						canvas.drawRect(p.x, p.y, p.x + p.size, p.y + p.size, paint);
+			final SurfaceHolder holder = getSurfaceHolder();
+			synchronized(holder) {
+				Canvas canvas = null;
+				try {
+					canvas = holder.lockCanvas();
+					if(canvas != null) {
+						canvas.drawColor(Color.DKGRAY);
+						for(ExplosionParticle p : textExplObj) {
+							paint.setColor((int)p.color);
+							canvas.drawRect(p.x, p.y, p.x + p.size, p.y + p.size, paint);
+						}
+						for(TextObject t : textObj) {
+							paint.setColor(t.color);
+							paint.setTextSize(t.size);
+							canvas.drawText(t.text, t.x, t.y, paint);
+						}
+						paint.setShadowLayer(1, 2, 2, Color.BLACK);
 					}
-				for(TextObject t : textObj) {
-					paint.setColor(t.color);
-					paint.setTextSize(t.size);
-					canvas.drawText(t.text, t.x, t.y, paint);
+				} finally {
+					if(canvas != null)
+						holder.unlockCanvasAndPost(canvas);
 				}
-				paint.setShadowLayer(1, 2, 2, Color.BLACK);
-			} finally {
-				holder.unlockCanvasAndPost(canvas);
 			}
-			//System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 5-6ms on my device (LGP960).
+			//System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }

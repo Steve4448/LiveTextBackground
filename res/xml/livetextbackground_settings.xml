@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        android:title="@string/livetextbackground_settings"
+        android:key="livetextbackground_settings">
+    <EditTextPreference
+            android:key="settings_text"
+            android:title="@string/label_settings_text_label"
+            android:summary="@string/label_settings_text_desc"
+            android:defaultValue="@string/label_settings_text_default" />
+</PreferenceScreen>
