@@ -184,7 +184,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(Color.alpha(p.color) <= 0)
 					textExplObj.remove(p);
 			}
-			//paintHandler.removeCallbacks(paintRunnable);
+			paintHandler.removeCallbacks(paintRunnable);
 			if(visible)
 				paintHandler.post(paintRunnable);
 			//System.out.println("Finished logic in " + (System.currentTimeMillis() - startTime) + "ms.");
