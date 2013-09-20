@@ -19,7 +19,6 @@ import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
 
 public class LiveTextBackgroundService extends WallpaperService {
-	public static final int DESIRED_FPS = 1000/30;
 	
 	@Override
 	public Engine onCreateEngine() {
@@ -43,6 +42,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private String[] availableStrings;
 		private boolean collisionEnabled;
+		private int desiredFPS;
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
@@ -93,13 +93,18 @@ public class LiveTextBackgroundService extends WallpaperService {
 				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
 				availableStrings = prefs.getString("settings_text", getResources().getString(R.string.label_settings_text_default)).split("\\|");
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
-				
+				try {
+					desiredFPS = 1000 / Integer.parseInt(prefs.getString("settings_desired_fps", getResources().getString(R.string.label_settings_desired_fps_default)));
+				} catch (Exception e) {
+					prefs.edit().putString("settings_desired_fps", getResources().getString(R.string.label_settings_desired_fps_default)).commit();
+					desiredFPS = 1000 / Integer.parseInt(getResources().getString(R.string.label_settings_desired_fps_default));
+				}
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
 					public void run() {
 						logic();
 					}
-				}, DESIRED_FPS, DESIRED_FPS);
+				}, desiredFPS, desiredFPS);
 				paintHandler.post(paintRunnable);
 			} else {
 				if(logicTimer != null) {
@@ -181,7 +186,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 			}
 			//paintHandler.removeCallbacks(paintRunnable);
 			if(visible)
-				paintHandler.postDelayed(paintRunnable, DESIRED_FPS);
+				paintHandler.post(paintRunnable);
 			//System.out.println("Finished logic in " + (System.currentTimeMillis() - startTime) + "ms.");
 		}
 		

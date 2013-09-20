@@ -11,4 +11,7 @@
     <string name="label_settings_collision_label">Collision</string>
     <string name="label_settings_collision_desc">Allows a collision check with a particle effect.</string>
     <bool name="label_settings_collision_default">true</bool>
+    
+    <string name="label_settings_desired_fps_label">Desired FPS</string>
+    <string name="label_settings_desired_fps_default">30</string>
 </resources>
