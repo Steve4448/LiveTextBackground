@@ -4,8 +4,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import steve4448.livetextbackground.R;
+import steve4448.livetextbackground.activity.PreferencesActivity;
 import steve4448.livetextbackground.background.object.ExplosionParticle;
 import steve4448.livetextbackground.background.object.TextObject;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -37,6 +40,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 			}
 		};
 		private boolean visible = false;
+		private String[] availableStrings;
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
@@ -82,6 +86,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 			if(on) {
 				if(logicTimer != null)
 					setupLogicHandler(false);
+				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
+				availableStrings = prefs.getString("settings_text", getString(R.string.label_settings_text_default)).split("\\|");
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
 					public void run() {
@@ -106,7 +112,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private void logic() {
 			//long startTime = System.currentTimeMillis();
 			if((int)(Math.random() * 10) == 1 || textObj.size() < 3) {
-				String text = "Testing";
+				String text = availableStrings[(int)(Math.random() * availableStrings.length)];
 				int size = (int)(8 + Math.random() * 12);
 				Rect bounds = new Rect();
 				paint.setTextSize(size);

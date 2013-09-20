@@ -5,6 +5,6 @@
     <string name="livetextbackground_settings">LiveTextBackground Settings</string>
     
     <string name="label_settings_text_label">Displayed Text</string>
-    <string name="label_settings_text_desc">The displayable text, separate different entries with a pipe-line character (|) escapeable via back-slash (\\)</string>
+    <string name="label_settings_text_desc">The displayable text, separate different entries with a pipe-line character (|).</string>
     <string name="label_settings_text_default">Example|Another Example</string>
 </resources>
