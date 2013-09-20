@@ -4,10 +4,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import steve4448.livetextbackground.background.object.ExplosionParticle;
 import steve4448.livetextbackground.background.object.TextObject;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
@@ -24,6 +27,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private SurfaceHolder holder;
 		private Paint paint = new Paint();
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
+		private CopyOnWriteArrayList<ExplosionParticle> textExplObj = new CopyOnWriteArrayList<ExplosionParticle>();
 		private Timer logicTimer;
 		private TimerTask logicTimerTask;
 		private final Handler paintHandler = new Handler();
@@ -37,7 +41,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
-			paint.setStyle(Paint.Style.FILL);
+			paint.setStyle(Paint.Style.STROKE);
 		}
 		
 		@Override
@@ -86,8 +90,14 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private void logic() {
 			//long startTime = System.currentTimeMillis();
-			if((int)(Math.random() * 22) == 1 || textObj.size() < 3)
-				textObj.add(new TextObject("Testing", (Math.random() * getDesiredMinimumWidth()), 0, (int)(8 + Math.random() * 12), Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
+			if((int)(Math.random() * 10) == 1 || textObj.size() < 3) {
+				String text = "Testing";
+				int size = (int)(8 + Math.random() * 12);
+				Rect bounds = new Rect();
+				paint.setTextSize(size);
+				paint.getTextBounds(text, 0, text.length(), bounds);
+				textObj.add(new TextObject(text, (float)(Math.random() * getDesiredMinimumWidth()), 0, bounds.width(), bounds.height(), size, Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
+			}
 			for(TextObject t : textObj) {
 				//Text Object Logic
 				if(t.velocityX > 0) {
@@ -101,10 +111,46 @@ public class LiveTextBackgroundService extends WallpaperService {
 						t.velocityX = 0;
 				}
 				t.x += t.velocityX;
-				t.y += (t.velocityY+=0.1);
-				if(t.y > getDesiredMinimumHeight() + (t.size * 2) || t.x > getDesiredMinimumWidth() || t.x < 0 - paint.measureText(t.text))
+				t.y += t.velocityY+=0.01;
+				if(t.y > getDesiredMinimumHeight() + (t.height) || t.x > getDesiredMinimumWidth() || t.x < 0 - t.width) {
 					textObj.remove(t);
+					continue;
+				}
+				RectF collisionRect = new RectF(t.x, t.y - t.height, t.x + t.width, t.y);
+				for(TextObject t2 : textObj) {
+					if(t2 == t)
+						continue;
+					if(collisionRect.intersect(t2.x, t2.y - t2.height, t2.x + t2.width, t2.y)) {
+						for(int i = 0; i < collisionRect.width() * collisionRect.height(); i++)
+							textExplObj.add(new ExplosionParticle(collisionRect.left + (float)(Math.random() * collisionRect.width()), collisionRect.top + (float)(Math.random() * collisionRect.height()), 2, ((int)(Math.random() * 2) == 0 ? t.color : t2.color)));
+						textObj.remove(t);
+						textObj.remove(t2);
+						break;
+					}
+				}
 			}
+			for(ExplosionParticle p : textExplObj) {
+				if(p.velocityX > 0) {
+					p.velocityX-=0.01;
+					if(p.velocityX < 0)
+						p.velocityX = 0;
+				}
+				if(p.velocityX < 0) {
+					p.velocityX+=0.01;
+					if(p.velocityX > 0)
+						p.velocityX = 0;
+				}
+				
+				p.x += p.velocityX;
+				p.y += p.velocityY+=0.01;
+				int leftoverAlpha = Color.alpha(p.color) - (int)(Math.random() * 8);
+				if(leftoverAlpha < 0)
+					leftoverAlpha = 0;
+				p.color = Color.argb(leftoverAlpha, Color.red(p.color), Color.green(p.color), Color.blue(p.color));
+				if(Color.alpha(p.color) <= 0)
+					textExplObj.remove(p);
+			}
+			
 			paintHandler.post(paintRunnable);
 			//System.out.println("Finished logic in " + (System.currentTimeMillis() - startTime) + "ms.");
 		}
@@ -116,11 +162,17 @@ public class LiveTextBackgroundService extends WallpaperService {
 			Canvas canvas = holder.lockCanvas();
 			try {
 				canvas.drawColor(Color.DKGRAY);
+				for(ExplosionParticle p : textExplObj)
+					if(p != null) {
+						paint.setColor((int)p.color);
+						canvas.drawRect(p.x, p.y, p.x + p.size, p.y + p.size, paint);
+					}
 				for(TextObject t : textObj) {
 					paint.setColor(t.color);
 					paint.setTextSize(t.size);
-					canvas.drawText(t.text, (int)t.x, (int)t.y, paint);
+					canvas.drawText(t.text, t.x, t.y, paint);
 				}
+				paint.setShadowLayer(1, 2, 2, Color.BLACK);
 			} finally {
 				holder.unlockCanvasAndPost(canvas);
 			}
