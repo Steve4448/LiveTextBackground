@@ -40,7 +40,9 @@ public class LiveTextBackgroundService extends WallpaperService {
 			}
 		};
 		private boolean visible = false;
+		
 		private String[] availableStrings;
+		private boolean collisionEnabled;
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
@@ -86,8 +88,12 @@ public class LiveTextBackgroundService extends WallpaperService {
 			if(on) {
 				if(logicTimer != null)
 					setupLogicHandler(false);
+				
+				/* Load Settings */
 				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
-				availableStrings = prefs.getString("settings_text", getString(R.string.label_settings_text_default)).split("\\|");
+				availableStrings = prefs.getString("settings_text", getResources().getString(R.string.label_settings_text_default)).split("\\|");
+				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
+				
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
 					public void run() {
@@ -137,16 +143,18 @@ public class LiveTextBackgroundService extends WallpaperService {
 					textObj.remove(t);
 					continue;
 				}
-				RectF collisionRect = new RectF(t.x, t.y - t.height, t.x + t.width, t.y);
-				for(TextObject t2 : textObj) {
-					if(t2 == t)
-						continue;
-					if(collisionRect.intersect(t2.x, t2.y - t2.height, t2.x + t2.width, t2.y)) {
-						for(int i = 0; i < collisionRect.width() * collisionRect.height(); i++)
-							textExplObj.add(new ExplosionParticle(collisionRect.left + (float)(Math.random() * collisionRect.width()), collisionRect.top + (float)(Math.random() * collisionRect.height()), 2, ((int)(Math.random() * 2) == 0 ? t.color : t2.color)));
-						textObj.remove(t);
-						textObj.remove(t2);
-						break;
+				if(collisionEnabled) {
+					RectF collisionRect = new RectF(t.x, t.y - t.height, t.x + t.width, t.y);
+					for(TextObject t2 : textObj) {
+						if(t2 == t)
+							continue;
+						if(collisionRect.intersect(t2.x, t2.y - t2.height, t2.x + t2.width, t2.y)) {
+							for(int i = 0; i < collisionRect.width() * collisionRect.height(); i++)
+								textExplObj.add(new ExplosionParticle(collisionRect.left + (float)(Math.random() * collisionRect.width()), collisionRect.top + (float)(Math.random() * collisionRect.height()), 2, ((int)(Math.random() * 2) == 0 ? t.color : t2.color)));
+							textObj.remove(t);
+							textObj.remove(t2);
+							break;
+						}
 					}
 				}
 			}
