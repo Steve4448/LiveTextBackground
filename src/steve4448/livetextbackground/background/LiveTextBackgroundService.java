@@ -36,7 +36,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				draw();
 			}
 		};
-		private boolean handlerBusy = false;
+		private boolean visible = false;
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
@@ -62,30 +62,34 @@ public class LiveTextBackgroundService extends WallpaperService {
 		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
 			super.onSurfaceDestroyed(holder);
+			this.visible = false;
 			setupLogicHandler(false);
 		}
 		
 		@Override
+		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+			super.onSurfaceChanged(holder, format, width, height);
+			setupLogicHandler(true);
+		}
+		
+		@Override
 		public void onVisibilityChanged(boolean visible) {
+			this.visible = visible;
 			setupLogicHandler(visible);
 		}
 		
 		private void setupLogicHandler(boolean on) {
-			if(!handlerBusy && on) {
-				handlerBusy = true;
+			if(on) {
+				if(logicTimer != null)
+					setupLogicHandler(false);
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
-					@Override
 					public void run() {
-						try {
-							logic();
-							Thread.sleep(DESIRED_FPS);
-						} catch(InterruptedException e) {
-						}
+						logic();
 					}
 				}, DESIRED_FPS, DESIRED_FPS);
-			} else if(handlerBusy && !on) {
-				handlerBusy = false;
+				paintHandler.post(paintRunnable);
+			} else {
 				if(logicTimer != null) {
 					if(logicTimerTask != null) {
 						logicTimerTask.cancel();
@@ -161,35 +165,34 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(Color.alpha(p.color) <= 0)
 					textExplObj.remove(p);
 			}
-			
-			paintHandler.post(paintRunnable);
+			//paintHandler.removeCallbacks(paintRunnable);
+			if(visible)
+				paintHandler.postDelayed(paintRunnable, DESIRED_FPS);
 			//System.out.println("Finished logic in " + (System.currentTimeMillis() - startTime) + "ms.");
 		}
 		
 		private void draw() {
 			//long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
-			synchronized(holder) {
-				Canvas canvas = null;
-				try {
-					canvas = holder.lockCanvas();
-					if(canvas != null) {
-						canvas.drawColor(Color.DKGRAY);
-						for(ExplosionParticle p : textExplObj) {
-							paint.setColor((int)p.color);
-							canvas.drawRect(p.x, p.y, p.x + p.size, p.y + p.size, paint);
-						}
-						for(TextObject t : textObj) {
-							paint.setColor(t.color);
-							paint.setTextSize(t.size);
-							canvas.drawText(t.text, t.x, t.y, paint);
-						}
-						paint.setShadowLayer(1, 2, 2, Color.BLACK);
+			Canvas canvas = null;
+			try {
+				canvas = holder.lockCanvas();
+				if(canvas != null) {
+					canvas.drawColor(Color.DKGRAY);
+					for(ExplosionParticle p : textExplObj) {
+						paint.setColor((int)p.color);
+						canvas.drawRect(p.x, p.y, p.x + p.size, p.y + p.size, paint);
 					}
-				} finally {
-					if(canvas != null)
-						holder.unlockCanvasAndPost(canvas);
+					for(TextObject t : textObj) {
+						paint.setColor(t.color);
+						paint.setTextSize(t.size);
+						canvas.drawText(t.text, t.x, t.y, paint);
+					}
+					paint.setShadowLayer(1, 2, 2, Color.BLACK);
 				}
+			} finally {
+				if(canvas != null)
+					holder.unlockCanvasAndPost(canvas);
 			}
 			//System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
