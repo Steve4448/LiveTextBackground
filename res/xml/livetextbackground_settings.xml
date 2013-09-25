@@ -8,6 +8,10 @@
 				android:title="@string/label_settings_text_label"
 				android:summary="@string/label_settings_text_desc"
 				android:defaultValue="@string/label_settings_text_default" />
+		<steve4448.livetextbackground.preference.MinMaxBarPreference
+				android:key="settings_text_size"
+				android:title="@string/label_settings_text_size_label"
+				android:summary="@string/label_settings_text_size_desc" />
 		<CheckBoxPreference
 				android:key="settings_collision"
 				android:title="@string/label_settings_collision_label"
@@ -17,7 +21,7 @@
 	<EditTextPreference
 			android:key="settings_desired_fps"
 			android:title="@string/label_settings_desired_fps_label"
-			android:defaultValue="@string/label_settings_desired_fps_default" />
-	<steve4448.livetextbackground.preference.ColorPicker
+			android:defaultValue="@integer/label_settings_desired_fps_default" />
+	<steve4448.livetextbackground.preference.ColorPickerPreference
 			android:title="@string/label_settings_background_color" />
 </PreferenceScreen>

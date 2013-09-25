@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">LiveTextBackground</string>
     <string name="app_desc">Allows a live text background with customizable features like collision, etc.</string>
     <string name="livetextbackground_settings">Live Text Background Settings</string>
@@ -11,12 +10,21 @@
     <string name="label_settings_text_desc">The displayable text, separate different entries with a pipe-line character (|).</string>
     <string name="label_settings_text_default">Example|Another Example</string>
     
+    <string name="label_settings_text_size_label">Text Size</string>
+    <string name="label_settings_text_size_desc">The minimum to maximum range of the text size.</string>
+    <integer name="label_settings_text_size_min">2</integer>
+    <integer name="label_settings_text_size_max">100</integer>
+    <integer name="label_settings_text_size_default_min">8</integer>
+    <integer name="label_settings_text_size_default_max">22</integer>
+    
     <string name="label_settings_collision_label">Collision</string>
     <string name="label_settings_collision_desc">Allows a collision check with a particle effect.</string>
     <bool name="label_settings_collision_default">true</bool>
 
     <string name="label_settings_desired_fps_label">Desired FPS</string>
-    <string name="label_settings_desired_fps_default">30</string>
+    <integer name="label_settings_desired_fps_default">30</integer>
     
     <string name="label_settings_background_color">Background Color</string>
+    
+    <string name="min_max_bar_default_dp">0dp</string>
 </resources>

@@ -94,13 +94,14 @@ public class LiveTextBackgroundService extends WallpaperService {
 				availableStrings = prefs.getString("settings_text", getResources().getString(R.string.label_settings_text_default)).split("\\|");
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
 				try {
-					desiredFPS = 1000 / Integer.parseInt(prefs.getString("settings_desired_fps", getResources().getString(R.string.label_settings_desired_fps_default)));
-				} catch (Exception e) {
-					prefs.edit().putString("settings_desired_fps", getResources().getString(R.string.label_settings_desired_fps_default)).commit();
-					desiredFPS = 1000 / Integer.parseInt(getResources().getString(R.string.label_settings_desired_fps_default));
+					desiredFPS = 1000 / Integer.getInteger(prefs.getString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))));
+				} catch(Exception e) {
+					prefs.edit().putString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))).commit();
+					desiredFPS = 1000 / getResources().getInteger(R.integer.label_settings_desired_fps_default);
 				}
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
+					@Override
 					public void run() {
 						logic();
 					}
@@ -121,7 +122,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		private void logic() {
-			//long startTime = System.currentTimeMillis();
+			// long startTime = System.currentTimeMillis();
 			if((int)(Math.random() * 10) == 1 || textObj.size() < 3) {
 				String text = availableStrings[(int)(Math.random() * availableStrings.length)];
 				int size = (int)(8 + Math.random() * 12);
@@ -131,19 +132,19 @@ public class LiveTextBackgroundService extends WallpaperService {
 				textObj.add(new TextObject(text, (float)(Math.random() * getDesiredMinimumWidth()), 0, bounds.width(), bounds.height(), size, Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
 			}
 			for(TextObject t : textObj) {
-				//Text Object Logic
+				// Text Object Logic
 				if(t.velocityX > 0) {
-					t.velocityX-=0.01;
+					t.velocityX -= 0.01;
 					if(t.velocityX < 0)
 						t.velocityX = 0;
 				}
 				if(t.velocityX < 0) {
-					t.velocityX+=0.01;
+					t.velocityX += 0.01;
 					if(t.velocityX > 0)
 						t.velocityX = 0;
 				}
 				t.x += t.velocityX;
-				t.y += t.velocityY+=0.01;
+				t.y += t.velocityY += 0.01;
 				if(t.y > getDesiredMinimumHeight() + (t.height) || t.x > getDesiredMinimumWidth() || t.x < 0 - t.width) {
 					textObj.remove(t);
 					continue;
@@ -165,18 +166,18 @@ public class LiveTextBackgroundService extends WallpaperService {
 			}
 			for(ExplosionParticle p : textExplObj) {
 				if(p.velocityX > 0) {
-					p.velocityX-=0.01;
+					p.velocityX -= 0.01;
 					if(p.velocityX < 0)
 						p.velocityX = 0;
 				}
 				if(p.velocityX < 0) {
-					p.velocityX+=0.01;
+					p.velocityX += 0.01;
 					if(p.velocityX > 0)
 						p.velocityX = 0;
 				}
 				
 				p.x += p.velocityX;
-				p.y += p.velocityY+=0.01;
+				p.y += p.velocityY += 0.01;
 				int leftoverAlpha = Color.alpha(p.color) - (int)(Math.random() * 8);
 				if(leftoverAlpha < 0)
 					leftoverAlpha = 0;
@@ -187,11 +188,11 @@ public class LiveTextBackgroundService extends WallpaperService {
 			paintHandler.removeCallbacks(paintRunnable);
 			if(visible)
 				paintHandler.post(paintRunnable);
-			//System.out.println("Finished logic in " + (System.currentTimeMillis() - startTime) + "ms.");
+			// System.out.println("Finished logic in " + (System.currentTimeMillis() - startTime) + "ms.");
 		}
 		
 		private void draw() {
-			//long startTime = System.currentTimeMillis();
+			// long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = null;
 			try {
@@ -199,7 +200,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null) {
 					canvas.drawColor(Color.DKGRAY);
 					for(ExplosionParticle p : textExplObj) {
-						paint.setColor((int)p.color);
+						paint.setColor(p.color);
 						canvas.drawRect(p.x, p.y, p.x + p.size, p.y + p.size, paint);
 					}
 					for(TextObject t : textObj) {
@@ -213,7 +214,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null)
 					holder.unlockCanvasAndPost(canvas);
 			}
-			//System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
+			// System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }
