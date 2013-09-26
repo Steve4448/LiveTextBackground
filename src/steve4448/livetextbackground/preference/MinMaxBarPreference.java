@@ -30,20 +30,26 @@ public class MinMaxBarPreference extends DialogPreference {
 		super.onBindDialogView(view);
 		final TextView minTextView = (TextView)view.findViewById(R.id.numMin);
 		final TextView maxTextView = (TextView)view.findViewById(R.id.numMax);
+		final TextView minPreviewTextView = (TextView)view.findViewById(R.id.minPreview);
+		final TextView maxPreviewTextView = (TextView)view.findViewById(R.id.maxPreview);
 		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.minMaxBar);
 		final OnMinMaxBarChangeListener minMaxBarChangeListener = new OnMinMaxBarChangeListener() {
 			@Override
 			public void onMinValueChanged(int newMin, boolean userCall) {
 				minTextView.setText(newMin + "dp");
+				minPreviewTextView.setTextSize((int)minMaxBar.getMinimum());
 			}
 			
 			@Override
 			public void onMaxValueChanged(int newMax, boolean userCall) {
 				maxTextView.setText(newMax + "dp");
+				maxPreviewTextView.setTextSize((int)minMaxBar.getMaximum());
 			}
 		};
 		minMaxBar.setOnMinMaxBarChangeListener(minMaxBarChangeListener);
 		minTextView.setText((int)minMaxBar.getMinimum() + "dp");
 		maxTextView.setText((int)minMaxBar.getMaximum() + "dp");
+		minPreviewTextView.setTextSize((int)minMaxBar.getMinimum());
+		maxPreviewTextView.setTextSize((int)minMaxBar.getMaximum());
 	}
 }

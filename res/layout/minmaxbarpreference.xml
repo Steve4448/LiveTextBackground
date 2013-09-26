@@ -35,4 +35,22 @@
         app:minDefault="@integer/label_settings_text_size_default_min"
         app:maxDefault="@integer/label_settings_text_size_default_max" />
 
+    <TextView
+        android:id="@+id/minPreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/minMaxBar"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/label_settings_text_minimum_preview" />
+
+    <TextView
+        android:id="@+id/maxPreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/minPreview"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/label_settings_text_maximum_preview" />
+
 </RelativeLayout>
