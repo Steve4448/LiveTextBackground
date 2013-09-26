@@ -13,7 +13,7 @@
     <string name="label_settings_text_size_label">Text Size</string>
     <string name="label_settings_text_size_desc">The minimum to maximum range of the text size.</string>
     <integer name="label_settings_text_size_min">2</integer>
-    <integer name="label_settings_text_size_max">100</integer>
+    <integer name="label_settings_text_size_max">30</integer>
     <integer name="label_settings_text_size_default_min">8</integer>
     <integer name="label_settings_text_size_default_max">22</integer>
     
@@ -26,7 +26,7 @@
     
     <string name="label_settings_background_color">Background Color</string>
     
-    <string name="label_settings_text_minimum_preview">Minimum\nPreview</string>
-    <string name="label_settings_text_maximum_preview">Maximum\nPreview</string>
-    <dimen name="min_max_bar_default_dp">0dp</dimen>
+    <string name="label_settings_text_minimum_preview">Minimum</string>
+    <string name="label_settings_text_maximum_preview">Maximum</string>
+    <dimen name="min_max_bar_default_dp">0px</dimen>
 </resources>

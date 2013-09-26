@@ -205,6 +205,10 @@ public class MinMaxBar extends View {
 		return actualMinimum;
 	}
 	
+	public float getAbsoluteMinimum() {
+		return absoluteMinimum;
+	}
+	
 	public void setMaximum(int maximum) {
 		actualMaximum = maximum;
 		if(actualMaximum < absoluteMinimum)
@@ -218,6 +222,10 @@ public class MinMaxBar extends View {
 	
 	public float getMaximum() {
 		return actualMaximum;
+	}
+	
+	public float getAbsoluteMaximum() {
+		return absoluteMaximum;
 	}
 	
 	public void setOnMinMaxBarChangeListener(OnMinMaxBarChangeListener onMinMaxBarChangeListener) {
