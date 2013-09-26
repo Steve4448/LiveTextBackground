@@ -10,10 +10,10 @@
     <string name="label_settings_text_desc">The displayable text, separate different entries with a pipe-line character (|).</string>
     <string name="label_settings_text_default">Example|Another Example</string>
     
-    <string name="label_settings_text_size_variance_label">Text Size Variance</string>
+    <string name="label_settings_text_size_variance_label">Text Size Range</string>
     <string name="label_settings_text_size_variance_desc">The minimum to maximum range of the text size.</string>
     <integer name="label_settings_text_size_min">2</integer>
-    <integer name="label_settings_text_size_max">30</integer>
+    <integer name="label_settings_text_size_max">50</integer>
     <integer name="label_settings_text_size_default_min">8</integer>
     <integer name="label_settings_text_size_default_max">22</integer>
     
@@ -28,5 +28,6 @@
     
     <string name="label_settings_text_minimum_preview">Minimum</string>
     <string name="label_settings_text_maximum_preview">Maximum</string>
-    <dimen name="min_max_bar_default_dp">0px</dimen>
+    
+    <dimen name="placeholder_min_max_bar_default_dp">0px</dimen>
 </resources>

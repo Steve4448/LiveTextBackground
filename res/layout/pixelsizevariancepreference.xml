@@ -16,7 +16,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="@dimen/min_max_bar_default_dp"
+            android:text="@dimen/placeholder_min_max_bar_default_dp"
             android:width="40dp" />
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/numMin"
             android:gravity="center"
-            android:text="@dimen/min_max_bar_default_dp"
+            android:text="@dimen/placeholder_min_max_bar_default_dp"
             android:width="40dp" />
 
         <steve4448.livetextbackground.widget.MinMaxBar
@@ -48,7 +48,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/minMaxBar"
             android:gravity="center"
-            android:height="50dp"
+            android:height="56dp"
             android:text="@string/label_settings_text_minimum_preview" />
 
         <TextView
@@ -59,7 +59,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/minPreview"
             android:gravity="center"
-            android:height="50dp"
+            android:height="56dp"
             android:text="@string/label_settings_text_maximum_preview" />
     </RelativeLayout>
 
