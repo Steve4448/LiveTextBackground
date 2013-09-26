@@ -48,7 +48,6 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/minMaxBar"
             android:gravity="center"
-            android:height="56dp"
             android:text="@string/label_settings_text_minimum_preview" />
 
         <TextView
@@ -59,7 +58,6 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/minPreview"
             android:gravity="center"
-            android:height="56dp"
             android:text="@string/label_settings_text_maximum_preview" />
     </RelativeLayout>
 
