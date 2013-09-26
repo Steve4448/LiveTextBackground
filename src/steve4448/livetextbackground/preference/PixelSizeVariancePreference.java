@@ -4,40 +4,35 @@ import steve4448.livetextbackground.R;
 import steve4448.livetextbackground.widget.MinMaxBar;
 import steve4448.livetextbackground.widget.listener.OnMinMaxBarChangeListener;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.preference.DialogPreference;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 public class PixelSizeVariancePreference extends DialogPreference {
-	private Context context = null;
+	public String keyMin = "minKey", keyMax = "maxKey";
 	private int min = 0, max = 0;
 	private boolean exists = false;
 	
 	public PixelSizeVariancePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		actualInit(context, attrs);
-	}
-	
-	public PixelSizeVariancePreference(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		actualInit(context, attrs);
-	}
-	
-	public void actualInit(Context context, AttributeSet attrs) {
-		this.context = context;
 		setDialogLayoutResource(R.layout.pixelsizevariancepreference);
+		TypedArray extraAttrs = getContext().obtainStyledAttributes(attrs, R.styleable.PixelSizeVariancePreference, 0, 0);
+		if(extraAttrs.hasValue(R.styleable.PixelSizeVariancePreference_minKey))
+			keyMin = extraAttrs.getString(R.styleable.PixelSizeVariancePreference_minKey);
+		if(extraAttrs.hasValue(R.styleable.PixelSizeVariancePreference_maxKey))
+			keyMax = extraAttrs.getString(R.styleable.PixelSizeVariancePreference_maxKey);
+		extraAttrs.recycle();
 	}
 	
 	@Override
 	public void onBindDialogView(View view) {
-		super.onBindDialogView(view);
-		exists = PreferenceManager.getDefaultSharedPreferences(context).contains("minimum");
+		exists = getSharedPreferences().contains(keyMin);
 		if(exists) {
-			min = PreferenceManager.getDefaultSharedPreferences(context).getInt("minimum", -1);
-			max = PreferenceManager.getDefaultSharedPreferences(context).getInt("maximum", -1);
+			min = getSharedPreferences().getInt(keyMin, -1);
+			max = getSharedPreferences().getInt(keyMax, -1);
 		}
 		final TextView minTextView = (TextView)view.findViewById(R.id.numMin);
 		final TextView maxTextView = (TextView)view.findViewById(R.id.numMax);
@@ -46,7 +41,6 @@ public class PixelSizeVariancePreference extends DialogPreference {
 		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.minMaxBar);
 		final OnMinMaxBarChangeListener minMaxBarChangeListener = new OnMinMaxBarChangeListener() {
 			@Override
-			
 			public void onMinValueChanged(int newMin, boolean userCall) {
 				min = newMin;
 				minTextView.setText(min + "px");
@@ -75,11 +69,13 @@ public class PixelSizeVariancePreference extends DialogPreference {
 		float tmpScreenDenisty = getContext().getResources().getDisplayMetrics().density;
 		minPreviewTextView.setHeight((int)(tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));
 		maxPreviewTextView.setHeight((int)(tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));
+		super.onBindDialogView(view);
 	}
 	
 	@Override
-	public void onDialogClosed(boolean shouldSave) {
-		if(shouldSave)
-			PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("minimum", min).putInt("maximum", max).commit();
+	public void onDialogClosed(boolean positiveResult) {
+		super.onDialogClosed(positiveResult);
+		if(positiveResult)
+			getSharedPreferences().edit().putInt(keyMin, min).putInt(keyMax, max).commit();
 	}
 }

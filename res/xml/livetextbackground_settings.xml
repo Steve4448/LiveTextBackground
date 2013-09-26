@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 		android:title="@string/livetextbackground_settings"
-		android:key="livetextbackground_settings">
+		android:key="livetextbackground_settings"
+    	xmlns:additionalPrefs="http://schemas.android.com/apk/res/steve4448.livetextbackground">
 	<PreferenceScreen android:title="@string/label_settings_category_text">
 		<EditTextPreference
 				android:key="settings_text"
@@ -9,9 +10,10 @@
 				android:summary="@string/label_settings_text_desc"
 				android:defaultValue="@string/label_settings_text_default" />
 		<steve4448.livetextbackground.preference.PixelSizeVariancePreference
-				android:key="settings_text_size_variance"
 				android:title="@string/label_settings_text_size_variance_label"
-				android:summary="@string/label_settings_text_size_variance_desc" />
+				android:summary="@string/label_settings_text_size_variance_desc"
+				additionalPrefs:minKey="settings_text_size_variance_min"
+				additionalPrefs:maxKey="settings_text_size_variance_max" />
 		<CheckBoxPreference
 				android:key="settings_collision"
 				android:title="@string/label_settings_collision_label"

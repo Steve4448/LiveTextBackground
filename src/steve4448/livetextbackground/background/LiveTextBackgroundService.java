@@ -43,6 +43,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private String[] availableStrings;
 		private boolean collisionEnabled;
 		private int desiredFPS;
+		private int textSizeMin, textSizeMax;
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
@@ -91,6 +92,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 				
 				/* Load Settings */
 				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
+				textSizeMin = prefs.getInt("settings_text_size_variance_min", getResources().getInteger(R.integer.label_settings_text_size_default_min));
+				textSizeMax = prefs.getInt("settings_text_size_variance_max", getResources().getInteger(R.integer.label_settings_text_size_default_max));
 				availableStrings = prefs.getString("settings_text", getResources().getString(R.string.label_settings_text_default)).split("\\|");
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
 				try {
@@ -125,7 +128,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 			// long startTime = System.currentTimeMillis();
 			if((int)(Math.random() * 10) == 1 || textObj.size() < 3) {
 				String text = availableStrings[(int)(Math.random() * availableStrings.length)];
-				int size = (int)(8 + Math.random() * 12);
+				int size = (int)(textSizeMin + (Math.random() * (textSizeMax - textSizeMin)));
 				Rect bounds = new Rect();
 				paint.setTextSize(size);
 				paint.getTextBounds(text, 0, text.length(), bounds);

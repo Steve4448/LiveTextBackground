@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ColorPickerPreference">
-        
-    </declare-styleable>
 	<declare-styleable name="MinMaxBar">
 	    <attr name="min" format="integer" />
 		<attr name="max" format="integer" />
 		<attr name="minDefault" format="integer" />
 		<attr name="maxDefault" format="integer" />
 	</declare-styleable>
+	
+    <declare-styleable name="ColorPickerPreference">
+        
+    </declare-styleable>
+	<declare-styleable name="PixelSizeVariancePreference">
+        <attr name="minKey" format="string" />
+		<attr name="maxKey" format="string" />
+    </declare-styleable>
 </resources>
