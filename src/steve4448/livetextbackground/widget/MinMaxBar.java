@@ -71,8 +71,8 @@ public class MinMaxBar extends View {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		locationMinXThumb = actualMinimum == 0 ? 0 : ((actualMinimum / absoluteMaximum) * (getWidth() - MAX_CIRCLE_RADIUS * 2));
-		locationMaxXThumb = actualMaximum == 0 ? 0 : ((actualMaximum / absoluteMaximum) * (getWidth() - MAX_CIRCLE_RADIUS * 2));
+		locationMinXThumb = actualMinimum == 0 ? 0 : (((actualMinimum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * (getWidth() - MAX_CIRCLE_RADIUS * 2));
+		locationMaxXThumb = actualMaximum == 0 ? 0 : (((actualMaximum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * (getWidth() - MAX_CIRCLE_RADIUS * 2));
 		canvas.translate(MAX_CIRCLE_RADIUS, 0);
 		paint.setColor(BAR_COLOR);
 		canvas.drawRect(0, getHeight() / 2 - getHeight() / 6, getWidth() - (MAX_CIRCLE_RADIUS * 2), getHeight() / 2 + getHeight() / 6, paint);
@@ -141,7 +141,7 @@ public class MinMaxBar extends View {
 			else if(newLocationMinXThumb > getWidth() - (MAX_CIRCLE_RADIUS * 2))
 				newLocationMinXThumb = getWidth() - (MAX_CIRCLE_RADIUS * 2);
 			
-			if(newLocationMinXThumb >= locationMaxXThumb) {
+			if(newLocationMinXThumb > locationMaxXThumb) {
 				newLocationMinXThumb = locationMaxXThumb;
 				draggingMinXThumb = false;
 				draggingMaxXThumb = true;
@@ -160,7 +160,7 @@ public class MinMaxBar extends View {
 			else if(newLocationMaxXThumb > getWidth() - (MAX_CIRCLE_RADIUS * 2))
 				newLocationMaxXThumb = getWidth() - (MAX_CIRCLE_RADIUS * 2);
 			
-			if(newLocationMaxXThumb <= locationMinXThumb) {
+			if(newLocationMaxXThumb < locationMinXThumb) {
 				newLocationMaxXThumb = locationMinXThumb;
 				draggingMinXThumb = true;
 				draggingMaxXThumb = false;

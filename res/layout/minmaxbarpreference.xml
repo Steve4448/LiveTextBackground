@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:width="40dp"
         android:gravity="center"
-        android:text="@string/min_max_bar_default_dp" />
+        android:text="@dimen/min_max_bar_default_dp" />
 
     <TextView
         android:id="@+id/numMax"
@@ -23,7 +23,7 @@
         android:layout_below="@+id/numMin"
         android:width="40dp"
         android:gravity="center"
-        android:text="@string/min_max_bar_default_dp" />
+        android:text="@dimen/min_max_bar_default_dp" />
 
     <steve4448.livetextbackground.widget.MinMaxBar
         android:id="@+id/minMaxBar"
