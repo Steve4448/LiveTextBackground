@@ -5,11 +5,15 @@ import steve4448.livetextbackground.widget.MinMaxBar;
 import steve4448.livetextbackground.widget.listener.OnMinMaxBarChangeListener;
 import android.content.Context;
 import android.preference.DialogPreference;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 public class MinMaxBarPreference extends DialogPreference {
+	private Context context = null;
+	private int min = 0, max = 0;
+	private boolean exists = false;
 	
 	public MinMaxBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -22,12 +26,18 @@ public class MinMaxBarPreference extends DialogPreference {
 	}
 	
 	public void actualInit(Context context, AttributeSet attrs) {
+		this.context = context;
 		setDialogLayoutResource(R.layout.minmaxbarpreference);
 	}
 	
 	@Override
 	public void onBindDialogView(View view) {
 		super.onBindDialogView(view);
+		exists = PreferenceManager.getDefaultSharedPreferences(context).contains("minimum");
+		if(exists) {
+			min = PreferenceManager.getDefaultSharedPreferences(context).getInt("minimum", -1);
+			max = PreferenceManager.getDefaultSharedPreferences(context).getInt("maximum", -1);
+		}
 		final TextView minTextView = (TextView)view.findViewById(R.id.numMin);
 		final TextView maxTextView = (TextView)view.findViewById(R.id.numMax);
 		final TextView minPreviewTextView = (TextView)view.findViewById(R.id.minPreview);
@@ -35,21 +45,37 @@ public class MinMaxBarPreference extends DialogPreference {
 		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.minMaxBar);
 		final OnMinMaxBarChangeListener minMaxBarChangeListener = new OnMinMaxBarChangeListener() {
 			@Override
+			
 			public void onMinValueChanged(int newMin, boolean userCall) {
-				minTextView.setText(newMin + "px");
-				minPreviewTextView.setTextSize((int)minMaxBar.getMinimum());
+				min = newMin;
+				minTextView.setText(min + "px");
+				minPreviewTextView.setTextSize(min);
 			}
 			
 			@Override
 			public void onMaxValueChanged(int newMax, boolean userCall) {
-				maxTextView.setText(newMax + "px");
-				maxPreviewTextView.setTextSize((int)minMaxBar.getMaximum());
+				max = newMax;
+				maxTextView.setText(max + "px");
+				maxPreviewTextView.setTextSize(max);
 			}
 		};
 		minMaxBar.setOnMinMaxBarChangeListener(minMaxBarChangeListener);
-		minTextView.setText((int)minMaxBar.getMinimum() + "px");
-		maxTextView.setText((int)minMaxBar.getMaximum() + "px");
-		minPreviewTextView.setTextSize((int)minMaxBar.getMinimum());
-		maxPreviewTextView.setTextSize((int)minMaxBar.getMaximum());
+		if(exists) {
+			minMaxBar.setMinimum(min);
+			minMaxBar.setMaximum(max);
+		} else {
+			min = (int)minMaxBar.getMinimum();
+			max = (int)minMaxBar.getMaximum();
+		}
+		minTextView.setText(min + "px");
+		maxTextView.setText(max + "px");
+		minPreviewTextView.setTextSize(min);
+		maxPreviewTextView.setTextSize(max);
+	}
+	
+	@Override
+	public void onDialogClosed(boolean shouldSave) {
+		if(shouldSave)
+			PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("minimum", min).putInt("maximum", max).commit();
 	}
 }
