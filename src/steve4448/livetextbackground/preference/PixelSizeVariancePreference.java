@@ -10,24 +10,24 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-public class MinMaxBarPreference extends DialogPreference {
+public class PixelSizeVariancePreference extends DialogPreference {
 	private Context context = null;
 	private int min = 0, max = 0;
 	private boolean exists = false;
 	
-	public MinMaxBarPreference(Context context, AttributeSet attrs) {
+	public PixelSizeVariancePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		actualInit(context, attrs);
 	}
 	
-	public MinMaxBarPreference(Context context, AttributeSet attrs, int defStyle) {
+	public PixelSizeVariancePreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		actualInit(context, attrs);
 	}
 	
 	public void actualInit(Context context, AttributeSet attrs) {
 		this.context = context;
-		setDialogLayoutResource(R.layout.minmaxbarpreference);
+		setDialogLayoutResource(R.layout.pixelsizevariancepreference);
 	}
 	
 	@Override

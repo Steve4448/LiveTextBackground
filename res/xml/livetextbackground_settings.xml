@@ -8,10 +8,10 @@
 				android:title="@string/label_settings_text_label"
 				android:summary="@string/label_settings_text_desc"
 				android:defaultValue="@string/label_settings_text_default" />
-		<steve4448.livetextbackground.preference.MinMaxBarPreference
-				android:key="settings_text_size"
-				android:title="@string/label_settings_text_size_label"
-				android:summary="@string/label_settings_text_size_desc" />
+		<steve4448.livetextbackground.preference.PixelSizeVariancePreference
+				android:key="settings_text_size_variance"
+				android:title="@string/label_settings_text_size_variance_label"
+				android:summary="@string/label_settings_text_size_variance_desc" />
 		<CheckBoxPreference
 				android:key="settings_collision"
 				android:title="@string/label_settings_collision_label"
