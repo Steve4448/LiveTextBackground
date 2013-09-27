@@ -22,7 +22,7 @@ public class MinMaxBar extends View {
 	public static final int THUMB_INNER_COLOR_PRESSED = Color.argb(255, 200, 200, 200);
 	public static final int THUMB_INNER_RING_COLOR = Color.argb(200, 55, 55, 55);
 	
-	private Paint paint = new Paint();
+	private Paint paint;
 	
 	private OnMinMaxBarChangeListener onMinMaxBarChangeListener;
 	
@@ -51,6 +51,7 @@ public class MinMaxBar extends View {
 	}
 	
 	public void init(Context context, AttributeSet attrs, int defStyle) {
+		paint = new Paint();
 		paint.setAntiAlias(true);
 		if(attrs != null) {
 			TypedArray extraAttrs = context.obtainStyledAttributes(attrs, R.styleable.MinMaxBar);
@@ -65,6 +66,7 @@ public class MinMaxBar extends View {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		//TODO: Actually listen to what's required/recommended.
 		this.setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), 60);
 	}
 	
