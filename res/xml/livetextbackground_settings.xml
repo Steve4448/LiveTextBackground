@@ -4,7 +4,7 @@
 		android:key="livetextbackground_settings"
     	xmlns:additionalPrefs="http://schemas.android.com/apk/res/steve4448.livetextbackground">
 	<PreferenceScreen android:title="@string/label_settings_category_text">
-		<EditTextPreference
+		<steve4448.livetextbackground.preference.StringArrayPreference
 				android:key="settings_text"
 				android:title="@string/label_settings_text_label"
 				android:summary="@string/label_settings_text_desc"
