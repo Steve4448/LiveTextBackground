@@ -17,6 +17,7 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
+import android.widget.Toast;
 
 public class LiveTextBackgroundService extends WallpaperService {
 	
@@ -94,7 +95,20 @@ public class LiveTextBackgroundService extends WallpaperService {
 				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
 				textSizeMin = prefs.getInt("settings_text_size_variance_min", getResources().getInteger(R.integer.label_settings_text_size_default_min));
 				textSizeMax = prefs.getInt("settings_text_size_variance_max", getResources().getInteger(R.integer.label_settings_text_size_default_max));
-				availableStrings = prefs.getString("settings_text", getResources().getString(R.string.label_settings_text_default)).split("\\|");
+				String[] defaultStrings = getResources().getString(R.string.label_settings_text_default).split("\\|");
+				int prefsStrings = prefs.getInt("settings_text", -1);
+				availableStrings = prefsStrings == -1 ? defaultStrings : new String[prefsStrings];
+				if(prefsStrings != -1) {
+					for(int i = 0; i < availableStrings.length; i++) {
+						availableStrings[i] = prefs.getString("settings_text" + i, null);
+					}
+				}
+				
+				if(availableStrings.length == 0) {
+					Toast.makeText(getBaseContext(), R.string.toast_error_loading_preferences, Toast.LENGTH_LONG).show();
+					return;
+				}
+				
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
 				try {
 					desiredFPS = 1000 / Integer.getInteger(prefs.getString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))));
