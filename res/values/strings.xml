@@ -7,7 +7,7 @@
     <string name="label_settings_category_text">Text Options</string>
     
     <string name="label_settings_text_label">Displayed Text</string>
-    <string name="label_settings_text_desc">The displayable text, separate different entries with a pipe-line character (|).</string>
+    <string name="label_settings_text_desc">The entries of text to be used to display on the background.</string>
     <string name="label_settings_text_default">Example|Another Example</string>
     
     <string name="label_settings_text_size_variance_label">Text Size Range</string>
@@ -20,19 +20,21 @@
     <string name="label_settings_collision_label">Collision</string>
     <string name="label_settings_collision_desc">Allows a collision check with a particle effect.</string>
     <bool name="label_settings_collision_default">true</bool>
-
-    <string name="label_settings_desired_fps_label">Desired FPS</string>
+    
+    <string name="label_settings_background_color">Background Color</string>
+    
+    <string name="label_settings_category_advanced">Advanced Settings</string>
+    <string name="label_settings_desired_fps_label">FPS</string>
+    <string name="label_settings_desired_fps_desc">The desired frames per second.</string>
     <integer name="label_settings_desired_fps_default_min">1</integer>
     <integer name="label_settings_desired_fps_default_max">100</integer>
     <integer name="label_settings_desired_fps_default">30</integer>
     
-    <string name="label_settings_background_color">Background Color</string>
-    
     <string name="label_settings_text_minimum_preview">Minimum</string>
     <string name="label_settings_text_maximum_preview">Maximum</string>
     
-    <string name="toast_error_parsing_desired_fps">Desired FPS settings invalid&#8230;</string>
-    <string name="toast_error_loading_preferences">Error Loading Preferences&#8230;\nReturned all to default</string>
+    <string name="toast_error_parsing_desired_fps">Desired FPS settings invalid&#8230;\nReturned to default.</string>
+    <string name="toast_error_loading_preferences">Error Loading Preferences&#8230;\nReturned all to default.</string>
     <string name="toast_fatal_error_loading_preferences">Fatal Error Loading Preferences\nCan\'t continue!</string>
     
     <string name="label_settings_text_array_entry_remove">Remove</string>
