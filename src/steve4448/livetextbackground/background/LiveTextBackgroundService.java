@@ -46,6 +46,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private boolean collisionEnabled;
 		private int desiredFPS;
 		private int textSizeMin, textSizeMax;
+		private boolean tried = false;
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
@@ -118,7 +119,12 @@ public class LiveTextBackgroundService extends WallpaperService {
 			} catch(Exception e) {
 				PreferenceManager.setDefaultValues(getBaseContext(), PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE, R.xml.livetextbackground_settings, true);
 				Toast.makeText(getBaseContext(), R.string.toast_error_loading_preferences, Toast.LENGTH_LONG).show();
-				return loadSettings();
+				if(!tried) {
+					tried = true;
+					boolean fixed = loadSettings();
+					return (tried = fixed);
+				} else
+					return false;
 			}
 		}
 		
