@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -64,8 +63,8 @@ public class PixelSizeVariancePreference extends DialogPreference {
 		}
 		minTextView.setText(min + "px");
 		maxTextView.setText(max + "px");
-		minPreviewTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, min);
-		minPreviewTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, max);
+		minPreviewTextView.setTextSize(min);
+		maxPreviewTextView.setTextSize(max);
 		float tmpScreenDenisty = getContext().getResources().getDisplayMetrics().density;
 		minPreviewTextView.setHeight((int)(tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));
 		maxPreviewTextView.setHeight((int)(tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));

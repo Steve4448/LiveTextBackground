@@ -243,7 +243,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		private void draw() {
-			long startTime = System.currentTimeMillis();
+			// long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = null;
 			try {
@@ -266,7 +266,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null)
 					holder.unlockCanvasAndPost(canvas);
 			}
-			System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
+			// System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }
