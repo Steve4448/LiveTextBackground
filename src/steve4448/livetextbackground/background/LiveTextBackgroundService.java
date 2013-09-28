@@ -116,11 +116,11 @@ public class LiveTextBackgroundService extends WallpaperService {
 				
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
 				try {
-					desiredFPS = 1000 / Integer.parseInt(prefs.getString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))));
+					desiredFPS = 1000 / prefs.getInt("settings_desired_fps", getResources().getInteger(R.integer.label_settings_desired_fps_default));
 				} catch(Exception e) {
 					e.printStackTrace();
 					Toast.makeText(getBaseContext(), R.string.toast_error_parsing_desired_fps, Toast.LENGTH_LONG).show();
-					prefs.edit().putString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))).commit();
+					prefs.edit().putInt("settings_desired_fps", getResources().getInteger(R.integer.label_settings_desired_fps_default)).commit();
 					desiredFPS = 1000 / getResources().getInteger(R.integer.label_settings_desired_fps_default);
 				}
 				return true;

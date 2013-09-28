@@ -13,26 +13,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/minMaxBar"
+            android:layout_alignTop="@+id/fpsBar"
             android:gravity="center"
-            android:text="@dimen/placeholder_min_max_bar_default_dp"
+            android:text="@string/placeholder_min_max_bar_default_dp"
             android:width="40dp" />
 
         <TextView
-            android:id="@+id/numMax"
+            android:id="@+id/minFPS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignBottom="@+id/minMaxBar"
+            android:layout_alignBottom="@+id/fpsBar"
             android:gravity="center"
-            android:text="@dimen/placeholder_min_max_bar_default_dp"
+            android:text="@string/placeholder_min_max_bar_default_dp"
             android:width="40dp" />
 
         <steve4448.livetextbackground.widget.MinMaxBar
-            android:id="@+id/minMaxBar"
+            android:id="@+id/fpsBar"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_toLeftOf="@+id/numMax"
+            android:layout_toLeftOf="@+id/minFPS"
             additionalPrefs:max="@integer/label_settings_text_size_max"
             additionalPrefs:maxDefault="@integer/label_settings_text_size_default_max"
             additionalPrefs:min="@integer/label_settings_text_size_min"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/minMaxBar"
+            android:layout_below="@+id/fpsBar"
             android:gravity="center"
             android:text="@string/label_settings_text_minimum_preview" />
 

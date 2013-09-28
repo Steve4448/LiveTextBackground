@@ -20,7 +20,7 @@
 				android:summary="@string/label_settings_collision_desc"
 				android:defaultValue="@bool/label_settings_collision_default" />
 	</PreferenceScreen>
-	<EditTextPreference
+	<steve4448.livetextbackground.preference.FrameRateSelectorPreference
 			android:key="settings_desired_fps"
 			android:title="@string/label_settings_desired_fps_label"
 			android:defaultValue="@integer/label_settings_desired_fps_default" />

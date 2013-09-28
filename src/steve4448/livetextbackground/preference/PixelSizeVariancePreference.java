@@ -35,10 +35,10 @@ public class PixelSizeVariancePreference extends DialogPreference {
 			max = getSharedPreferences().getInt(keyMax, -1);
 		}
 		final TextView minTextView = (TextView)view.findViewById(R.id.numMin);
-		final TextView maxTextView = (TextView)view.findViewById(R.id.numMax);
+		final TextView maxTextView = (TextView)view.findViewById(R.id.minFPS);
 		final TextView minPreviewTextView = (TextView)view.findViewById(R.id.minPreview);
 		final TextView maxPreviewTextView = (TextView)view.findViewById(R.id.maxPreview);
-		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.minMaxBar);
+		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.fpsBar);
 		final OnMinMaxBarChangeListener minMaxBarChangeListener = new OnMinMaxBarChangeListener() {
 			@Override
 			public void onMinValueChanged(int newMin, boolean userCall) {
