@@ -35,7 +35,7 @@ public class MinMaxBar extends View {
 	private PointF thumbMinPoint;
 	private PointF thumbMaxPoint;
 	
-	private boolean limitMinMax = false;
+	private boolean singleThumbMode = false;
 	
 	private boolean draggingMinXThumb = false;
 	private boolean draggingMaxXThumb = false;
@@ -67,9 +67,8 @@ public class MinMaxBar extends View {
 			TypedArray extraAttrs = context.obtainStyledAttributes(attrs, R.styleable.MinMaxBar);
 			actualMinimum = extraAttrs.getFloat(R.styleable.MinMaxBar_minDefault, 0);
 			actualMaximum = extraAttrs.getFloat(R.styleable.MinMaxBar_maxDefault, 100);
-			absoluteMinimum = extraAttrs.getFloat(R.styleable.MinMaxBar_min, actualMinimum);
-			absoluteMaximum = extraAttrs.getFloat(R.styleable.MinMaxBar_max, actualMaximum);
-			limitMinMax = extraAttrs.getBoolean(R.styleable.MinMaxBar_limitMinMax, limitMinMax);
+			singleThumbMode = extraAttrs.getBoolean(R.styleable.MinMaxBar_singleThumbMode, singleThumbMode);
+			setMinMaxAbsolutes(extraAttrs.getFloat(R.styleable.MinMaxBar_min, actualMinimum), extraAttrs.getFloat(R.styleable.MinMaxBar_max, actualMaximum));
 			extraAttrs.recycle();
 		}
 	}
@@ -116,7 +115,7 @@ public class MinMaxBar extends View {
 		}
 		
 		//Thumb Max:
-		{
+		if(!singleThumbMode) {
 			if(isEnabled()) {
 				paintFilled.setColor(draggingMaxXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
 				canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS, paintFilled);
@@ -179,7 +178,7 @@ public class MinMaxBar extends View {
 			else if(newLocationMinXThumb > barRect.right)
 				newLocationMinXThumb = barRect.right;
 			
-			if(newLocationMinXThumb > thumbMaxPoint.x) {
+			if(!singleThumbMode && newLocationMinXThumb > thumbMaxPoint.x) {
 				newLocationMinXThumb = thumbMaxPoint.x;
 				draggingMinXThumb = false;
 				draggingMaxXThumb = true;
@@ -188,7 +187,7 @@ public class MinMaxBar extends View {
 			actualMinimum = absoluteMinimum + ((newLocationMinXThumb - barRect.left) / (barRect.right - barRect.left)) * (absoluteMaximum - absoluteMinimum);
 			if(onMinMaxBarChangeListener != null)
 				onMinMaxBarChangeListener.onMinValueChanged((int)actualMinimum, true);
-		} else if(draggingMaxXThumb || (locPoint != null && steve4448.livetextbackground.util.RectF.intersects(locPoint, thumbMaxXRect))) {
+		} else if(draggingMaxXThumb || (locPoint != null && steve4448.livetextbackground.util.RectF.intersects(locPoint, thumbMaxXRect) && !singleThumbMode)) {
 			draggingMinXThumb = false;
 			draggingMaxXThumb = true;
 			float newLocationMaxXThumb = event.getX();
@@ -220,16 +219,21 @@ public class MinMaxBar extends View {
 		}
 	}
 	
-	public void setMinMaxAbsolutes(int min, int max) {
+	public void setMinMaxAbsolutes(float min, float max) {
 		absoluteMinimum = min;
 		absoluteMaximum = max;
-		if(getMinimum() != min)
-			setMinimum(min);
-		if(getMaximum() != max)
-			setMaximum(max);
+		if(actualMinimum < min)
+			actualMinimum = min;
+		if(actualMinimum > max)
+			actualMinimum = max;
+		if(actualMaximum < min)
+			actualMaximum = min;
+		if(actualMaximum > max)
+			actualMaximum = max;
+		invalidate();
 	}
 	
-	public void setMinimum(int minimum) {
+	public void setMinimum(float minimum) {
 		actualMinimum = minimum;
 		if(actualMinimum < absoluteMinimum)
 			actualMinimum = absoluteMinimum;
@@ -248,7 +252,7 @@ public class MinMaxBar extends View {
 		return absoluteMinimum;
 	}
 	
-	public void setMaximum(int maximum) {
+	public void setMaximum(float maximum) {
 		actualMaximum = maximum;
 		if(actualMaximum < absoluteMinimum)
 			actualMaximum = absoluteMinimum;
@@ -265,6 +269,10 @@ public class MinMaxBar extends View {
 	
 	public float getAbsoluteMaximum() {
 		return absoluteMaximum;
+	}
+	
+	public boolean isSingleThumbMode() {
+		return singleThumbMode;
 	}
 	
 	public void setOnMinMaxBarChangeListener(OnMinMaxBarChangeListener onMinMaxBarChangeListener) {

@@ -5,7 +5,7 @@
 		<attr name="max" format="integer" />
 		<attr name="minDefault" format="integer" />
 		<attr name="maxDefault" format="integer" />
-		<attr name="limitMinMax" format="boolean" />
+		<attr name="singleThumbMode" format="boolean" />
 	</declare-styleable>
 	
     <declare-styleable name="ColorPickerPreference">

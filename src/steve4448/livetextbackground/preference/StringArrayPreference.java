@@ -91,7 +91,6 @@ public class StringArrayPreference extends DialogPreference {
 		Button newButton = new Button(getContext(), null, android.R.attr.buttonStyleSmall);
 		newButton.setId(ViewHelper.findUnusedId(wrapper));
 		newButton.setText(R.string.label_settings_text_array_entry_remove);
-		// newButton.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL | Gravity.TOP);
 		
 		RelativeLayout.LayoutParams textEditLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		textEditLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
