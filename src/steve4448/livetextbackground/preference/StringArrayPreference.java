@@ -77,11 +77,15 @@ public class StringArrayPreference extends DialogPreference {
 		if(scrollView == null)
 			return;
 		RelativeLayout wrapper = new RelativeLayout(getContext());
-		EditText newTextEdit = new EditText(getContext());
+		final EditText newTextEdit = new EditText(getContext());
 		newTextEdit.setId(ViewHelper.findUnusedId(wrapper));
 		newTextEdit.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
-		newTextEdit.requestFocus();
-		newTextEdit.requestFocusFromTouch();
+		newTextEdit.post(new Runnable() {
+			@Override
+			public void run() {
+				newTextEdit.requestFocus();
+			}
+		});
 		if(initText != null)
 			newTextEdit.setText(initText);
 		Button newButton = new Button(getContext(), null, android.R.attr.buttonStyleSmall);
