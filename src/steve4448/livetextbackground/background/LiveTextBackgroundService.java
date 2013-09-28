@@ -181,7 +181,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 				Rect bounds = new Rect();
 				paint.setTextSize(size);
 				paint.getTextBounds(text, 0, text.length(), bounds);
-				textObj.add(new TextObject(text, (float)(Math.random() * getDesiredMinimumWidth()), 0, bounds.width(), bounds.height(), size, Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
+				float x = (float)(Math.random() * getDesiredMinimumWidth());
+				textObj.add(new TextObject(text, new RectF(x, 0, x + bounds.width(), bounds.height()), size, Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255))));
 			}
 			for(TextObject t : textObj) {
 				// Text Object Logic
@@ -195,20 +196,19 @@ public class LiveTextBackgroundService extends WallpaperService {
 					if(t.velocityX > 0)
 						t.velocityX = 0;
 				}
-				t.x += t.velocityX;
-				t.y += t.velocityY += 0.01;
-				if(t.y > getDesiredMinimumHeight() + (t.height) || t.x > getDesiredMinimumWidth() || t.x < 0 - t.width) {
+				t.velocityY += 0.01;
+				t.dimen.offset(t.velocityX, t.velocityY);
+				if(t.dimen.bottom > getDesiredMinimumHeight() || t.dimen.right > getDesiredMinimumWidth() || t.dimen.right < 0) {
 					textObj.remove(t);
 					continue;
 				}
 				if(collisionEnabled) {
-					RectF collisionRect = new RectF(t.x, t.y - t.height, t.x + t.width, t.y);
 					for(TextObject t2 : textObj) {
 						if(t2 == t)
 							continue;
-						if(collisionRect.intersect(t2.x, t2.y - t2.height, t2.x + t2.width, t2.y)) {
-							for(int i = 0; i < collisionRect.width() * collisionRect.height(); i++)
-								textExplObj.add(new ExplosionParticle(collisionRect.left + (float)(Math.random() * collisionRect.width()), collisionRect.top + (float)(Math.random() * collisionRect.height()), 2, ((int)(Math.random() * 2) == 0 ? t.color : t2.color)));
+						if(t.dimen.intersect(t2.dimen)) {
+							for(int i = 0; i < t.dimen.width() * t.dimen.height(); i++)
+								textExplObj.add(new ExplosionParticle(t.dimen.left + (float)(Math.random() * t.dimen.width()), t.dimen.top + (float)(Math.random() * t.dimen.height()), 2, ((int)(Math.random() * 2) == 0 ? t.color : t2.color)));
 							textObj.remove(t);
 							textObj.remove(t2);
 							break;
@@ -244,7 +244,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		private void draw() {
-			// long startTime = System.currentTimeMillis();
+			//long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = null;
 			try {
@@ -258,7 +258,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 					for(TextObject t : textObj) {
 						paint.setColor(t.color);
 						paint.setTextSize(t.size);
-						canvas.drawText(t.text, t.x, t.y, paint);
+						canvas.drawText(t.text, t.dimen.left, t.dimen.top, paint);
 					}
 					if(!hasShadow && applyShadow) {
 						paint.setShadowLayer(1, 2, 2, Color.BLACK);
@@ -272,7 +272,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null)
 					holder.unlockCanvasAndPost(canvas);
 			}
-			// System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
+			//System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }
