@@ -55,11 +55,14 @@ public class StringArrayPreference extends DialogPreference {
 		addNewEntryButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if(alterableLayout.getChildCount() == 2) {
-					Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
-					b.setEnabled(true);
-				}
 				addNewEntry();
+				attemptEnableFirst(true);
+				scrollView.post(new Runnable() {
+					@Override
+					public void run() {
+						scrollView.fullScroll(View.FOCUS_DOWN);
+					}
+				});
 			}
 		});
 		loadEntries();
@@ -77,6 +80,8 @@ public class StringArrayPreference extends DialogPreference {
 		EditText newTextEdit = new EditText(getContext());
 		newTextEdit.setId(ViewHelper.findUnusedId(wrapper));
 		newTextEdit.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
+		newTextEdit.requestFocus();
+		newTextEdit.requestFocusFromTouch();
 		if(initText != null)
 			newTextEdit.setText(initText);
 		Button newButton = new Button(getContext(), null, android.R.attr.buttonStyleSmall);
@@ -99,37 +104,15 @@ public class StringArrayPreference extends DialogPreference {
 		wrapper.addView(newTextEdit);
 		wrapper.addView(newButton);
 		
-
 		alterableLayout.addView(wrapper, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		addNewEntryButton.bringToFront();
 		
-		// TODO: Is there a better way to make it so the "New Entry" button can be kept at the bottom without re-adding?
-		alterableLayout.removeView(addNewEntryButton);
-		alterableLayout.addView(addNewEntryButton);
 		newButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				final View viewParent = (View)v.getParent();
-				final int beforeRemovalX = scrollView.getScrollX();
-				final int beforeRemovalY = scrollView.getScrollY();
-				scrollView.post(new Runnable() {
-					@Override
-					public void run() {
-						// TODO: Still improperly scrolls, think of a better method.
-						scrollView.scrollTo(beforeRemovalX, beforeRemovalY - viewParent.getHeight());
-					}
-				});
-				alterableLayout.removeView(viewParent);
-				if(alterableLayout.getChildCount() == 2) {
-					Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
-					b.setEnabled(false);
-				}
-			}
-		});
-		
-		scrollView.post(new Runnable() {
-			@Override
-			public void run() {
-				scrollView.fullScroll(View.FOCUS_DOWN);
+				alterableLayout.removeView((View)v.getParent());
+				attemptEnableFirst(false);
 			}
 		});
 	}
@@ -167,11 +150,7 @@ public class StringArrayPreference extends DialogPreference {
 			}
 			triedToLoad = false;
 		}
-		
-		if(alterableLayout.getChildCount() == 2) {
-			Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
-			b.setEnabled(false);
-		}
+		attemptEnableFirst(false);
 	}
 	
 	public void saveEntries(String[] entries) {
@@ -188,5 +167,12 @@ public class StringArrayPreference extends DialogPreference {
 		}
 		ed.commit();
 		System.out.println(" Done.");
+	}
+	
+	public void attemptEnableFirst(boolean enable) {
+		if(enable ? alterableLayout.getChildCount() > 2 : alterableLayout.getChildCount() == 2) {
+			Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
+			b.setEnabled(enable);
+		}
 	}
 }
