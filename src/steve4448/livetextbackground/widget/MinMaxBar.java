@@ -14,7 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class MinMaxBar extends View {
-	public static final int MAX_CIRCLE_RADIUS = 24;
 	public static final int BAR_COLOR = Color.argb(100, 60, 60, 60);
 	public static final int THUMB_COLOR = Color.argb(100, 0, 166, 255);
 	public static final int THUMB_COLOR_PRESSED = Color.argb(200, 0, 166, 255);
@@ -30,7 +29,8 @@ public class MinMaxBar extends View {
 	
 	private float absoluteMinimum = 0, actualMinimum = 0;
 	private float absoluteMaximum = 100, actualMaximum = 0;
-	
+
+	public float maxCircleRadius = 24;
 	private RectF barRect;
 	private PointF thumbMinPoint;
 	private PointF thumbMaxPoint;
@@ -76,7 +76,8 @@ public class MinMaxBar extends View {
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		barRect = new RectF(MAX_CIRCLE_RADIUS, h / 2 - h / 6, w - MAX_CIRCLE_RADIUS, h / 2 + h / 6);
+		barRect = new RectF(maxCircleRadius, h / 2 - h / 6, w - maxCircleRadius, h / 2 + h / 6);
+		maxCircleRadius = (float)(h / 3);
 		thumbMinPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 		thumbMaxPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 	}
@@ -93,37 +94,37 @@ public class MinMaxBar extends View {
 		{
 			if(isEnabled()) {
 				paintFilled.setColor(draggingMinXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
-				canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS, paintFilled);
+				canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, maxCircleRadius, paintFilled);
 			}
 			paintFilled.setColor(draggingMinXThumb ? THUMB_INNER_COLOR_PRESSED : isEnabled() ? THUMB_INNER_COLOR : THUMB_INNER_COLOR_PRESSED);
-			canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS / 2, paintFilled);
+			canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, maxCircleRadius / 2, paintFilled);
 			
 			if(isEnabled()) {
 				paintStroked.setColor(THUMB_OUTER_RING_COLOR);
-				canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS, paintStroked);
+				canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, maxCircleRadius, paintStroked);
 			}
 			
 			paintStroked.setColor(THUMB_INNER_RING_COLOR);
-			canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS / 2, paintStroked);
+			canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, maxCircleRadius / 2, paintStroked);
 		}
 		
 		//Thumb Max:
 		if(!singleThumbMode) {
 			if(isEnabled()) {
 				paintFilled.setColor(draggingMaxXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
-				canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS, paintFilled);
+				canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, maxCircleRadius, paintFilled);
 			}
 			
 			paintFilled.setColor(draggingMaxXThumb ? THUMB_INNER_COLOR_PRESSED : isEnabled() ? THUMB_INNER_COLOR : THUMB_INNER_COLOR_PRESSED);
-			canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS / 2, paintFilled);
+			canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, maxCircleRadius / 2, paintFilled);
 			
 			if(isEnabled()) {
 				paintStroked.setColor(THUMB_OUTER_RING_COLOR);
-				canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS, paintStroked);
+				canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, maxCircleRadius, paintStroked);
 			}
 			
 			paintStroked.setColor(THUMB_INNER_RING_COLOR);
-			canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS / 2, paintStroked);
+			canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, maxCircleRadius / 2, paintStroked);
 		}
 	}
 	
@@ -158,8 +159,8 @@ public class MinMaxBar extends View {
 		RectF thumbMinXRect = null, thumbMaxXRect = null;
 		if(!draggingMinXThumb && !draggingMaxXThumb) {
 			locPoint = new PointF(event.getX(), event.getY());
-			thumbMinXRect = new RectF(thumbMinPoint.x - MAX_CIRCLE_RADIUS, thumbMinPoint.y - MAX_CIRCLE_RADIUS, thumbMinPoint.x + MAX_CIRCLE_RADIUS, thumbMinPoint.y + MAX_CIRCLE_RADIUS);
-			thumbMaxXRect = new RectF(thumbMaxPoint.x - MAX_CIRCLE_RADIUS, thumbMaxPoint.y - MAX_CIRCLE_RADIUS, thumbMaxPoint.x + MAX_CIRCLE_RADIUS, thumbMaxPoint.y + MAX_CIRCLE_RADIUS);
+			thumbMinXRect = new RectF(thumbMinPoint.x - maxCircleRadius, thumbMinPoint.y - maxCircleRadius, thumbMinPoint.x + maxCircleRadius, thumbMinPoint.y + maxCircleRadius);
+			thumbMaxXRect = new RectF(thumbMaxPoint.x - maxCircleRadius, thumbMaxPoint.y - maxCircleRadius, thumbMaxPoint.x + maxCircleRadius, thumbMaxPoint.y + maxCircleRadius);
 		}
 		if(draggingMinXThumb || (locPoint != null && steve4448.livetextbackground.util.RectF.intersects(locPoint, thumbMinXRect))) {
 			draggingMinXThumb = true;
