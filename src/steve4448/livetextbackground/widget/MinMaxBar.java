@@ -84,7 +84,7 @@ public class MinMaxBar extends View {
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		barRect = new RectF(MAX_CIRCLE_RADIUS, h / 2 - h / 6, w - MAX_CIRCLE_RADIUS, h / 2 + h / 6);
+		barRect = new RectF(MAX_CIRCLE_RADIUS * 5, h / 2 - h / 6, w - (MAX_CIRCLE_RADIUS * 5), h / 2 + h / 6);
 		thumbMinPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 		thumbMaxPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 	}
@@ -92,8 +92,8 @@ public class MinMaxBar extends View {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		thumbMinPoint.x = actualMinimum == 0 ? 0 : (((actualMinimum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * barRect.right);
-		thumbMaxPoint.x = actualMaximum == 0 ? 0 : (((actualMaximum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * barRect.right);
+		thumbMinPoint.x = actualMinimum == 0 ? 0 : (((actualMinimum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * (barRect.right - barRect.left)) + barRect.left;
+		thumbMaxPoint.x = actualMaximum == 0 ? 0 : (((actualMaximum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * (barRect.right - barRect.left)) + barRect.left;
 		paintFilled.setColor(BAR_COLOR);
 		canvas.drawRect(barRect, paintFilled);
 		
@@ -185,7 +185,7 @@ public class MinMaxBar extends View {
 				draggingMaxXThumb = true;
 			}
 			
-			actualMinimum = absoluteMinimum + (newLocationMinXThumb / barRect.right) * (absoluteMaximum - absoluteMinimum);
+			actualMinimum = absoluteMinimum + ((newLocationMinXThumb - barRect.left) / (barRect.right - barRect.left)) * (absoluteMaximum - absoluteMinimum);
 			if(onMinMaxBarChangeListener != null)
 				onMinMaxBarChangeListener.onMinValueChanged((int)actualMinimum, true);
 		} else if(draggingMaxXThumb || (locPoint != null && steve4448.livetextbackground.util.RectF.intersects(locPoint, thumbMaxXRect))) {
@@ -203,7 +203,7 @@ public class MinMaxBar extends View {
 				draggingMinXThumb = true;
 				draggingMaxXThumb = false;
 			}
-			actualMaximum = absoluteMinimum + (newLocationMaxXThumb / barRect.right) * (absoluteMaximum - absoluteMinimum);
+			actualMaximum = absoluteMinimum + ((newLocationMaxXThumb - barRect.left) / (barRect.right - barRect.left)) * (absoluteMaximum - absoluteMinimum);
 			if(onMinMaxBarChangeListener != null)
 				onMinMaxBarChangeListener.onMaxValueChanged((int)actualMaximum, true);
 		}
