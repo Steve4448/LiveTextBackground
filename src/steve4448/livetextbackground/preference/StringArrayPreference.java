@@ -28,7 +28,7 @@ public class StringArrayPreference extends DialogPreference {
 	@Override
 	protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
 		if(restorePersistedValue) {
-			//Should already be persisted, don't bother...
+			// Should already be persisted, don't bother...
 		} else {
 			String[] vals = getSharedPreferences().getString(getKey(), (String)defaultValue).split("\\|");
 			SharedPreferences.Editor ed = getSharedPreferences().edit();
@@ -44,17 +44,20 @@ public class StringArrayPreference extends DialogPreference {
 	
 	@Override
 	protected Object onGetDefaultValue(TypedArray a, int index) {
-	    return a.getString(index);
+		return a.getString(index);
 	}
 	
-	private void loadDefaultValues() {
-		boolean exists = getSharedPreferences().contains(getKey());
-		if(exists) {
-			if(scrollView != null) {
-				int amt = getSharedPreferences().getInt(getKey(), -1);
-				for(int i = 0; i < amt; i++) {
-					addNewEntry(getSharedPreferences().getString(getKey() + i, null));
-				}
+	private void loadCurrentEntries() {
+		if(!hasKey())
+			return;
+		if(scrollView != null) {
+			int amt = getSharedPreferences().getInt(getKey(), -1);
+			for(int i = 0; i < amt; i++) {
+				addNewEntry(getSharedPreferences().getString(getKey() + i, null));
+			}
+			if(alterableLayout.getChildCount() == 2) {
+				Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
+				b.setEnabled(false);
 			}
 		}
 	}
@@ -63,14 +66,20 @@ public class StringArrayPreference extends DialogPreference {
 	public void onBindDialogView(final View view) {
 		scrollView = (ScrollView)view.findViewById(R.id.scrollView);
 		alterableLayout = (LinearLayout)view.findViewById(R.id.mainLayout);
+		
 		addNewEntryButton = (Button)view.findViewById(R.id.newEntryButton);
 		addNewEntryButton.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View view) {
+				if(alterableLayout.getChildCount() == 2) {
+					Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
+					b.setEnabled(true);
+				}
 				addNewEntry();
 			}
 		});
-		loadDefaultValues();
+		
+		loadCurrentEntries();
 		super.onBindDialogView(view);
 	}
 	
@@ -88,10 +97,10 @@ public class StringArrayPreference extends DialogPreference {
 		newButton.setText(R.string.label_settings_text_array_entry_remove);
 		// newButton.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL | Gravity.TOP);
 		
-		RelativeLayout.LayoutParams textViewLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		textViewLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		textViewLayout.addRule(RelativeLayout.LEFT_OF, newButton.getId());
-		wrapper.addView(newTextEdit, textViewLayout);
+		RelativeLayout.LayoutParams textEditLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		textEditLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		textEditLayout.addRule(RelativeLayout.LEFT_OF, newButton.getId());
+		wrapper.addView(newTextEdit, textEditLayout);
 		
 		RelativeLayout.LayoutParams buttonViewLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -100,7 +109,7 @@ public class StringArrayPreference extends DialogPreference {
 		wrapper.addView(newButton, buttonViewLayout);
 		alterableLayout.addView(wrapper, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 		
-		//TODO: Is there a better way to make it so the "New Entry" button can be kept at the bottom without re-adding?
+		// TODO: Is there a better way to make it so the "New Entry" button can be kept at the bottom without re-adding?
 		alterableLayout.removeView(addNewEntryButton);
 		alterableLayout.addView(addNewEntryButton);
 		newButton.setOnClickListener(new OnClickListener() {
@@ -117,6 +126,10 @@ public class StringArrayPreference extends DialogPreference {
 					}
 				});
 				alterableLayout.removeView(viewParent);
+				if(alterableLayout.getChildCount() == 2) {
+					Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
+					b.setEnabled(false);
+				}
 			}
 		});
 		
@@ -136,8 +149,8 @@ public class StringArrayPreference extends DialogPreference {
 			for(int i = 0; i < s.length; i++) {
 				s[i] = ((EditText)((RelativeLayout)alterableLayout.getChildAt(i)).getChildAt(0)).getText().toString();
 			}
-			//Would use putStringSet, but that exists in API >= 11, going for API 8.
-			//Could also just use persistString with a separator, but this seems much more dynamic in the long-run with seemingly little to no potential to fail.
+			// Would use putStringSet, but that exists in API >= 11, going for API 8.
+			// Could also just use persistString with a separator, but this seems much more dynamic in the long-run with seemingly little to no potential to fail.
 			SharedPreferences.Editor ed = getSharedPreferences().edit();
 			{
 				ed.putInt(getKey(), s.length);

@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
@@ -86,12 +87,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 			setupLogicHandler(visible);
 		}
 		
-		private void setupLogicHandler(boolean on) {
-			if(on) {
-				if(logicTimer != null)
-					setupLogicHandler(false);
-				
-				/* Load Settings */
+		private boolean loadSettings() {
+			try {
 				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
 				textSizeMin = prefs.getInt("settings_text_size_variance_min", getResources().getInteger(R.integer.label_settings_text_size_default_min));
 				textSizeMax = prefs.getInt("settings_text_size_variance_max", getResources().getInteger(R.integer.label_settings_text_size_default_max));
@@ -105,17 +102,36 @@ public class LiveTextBackgroundService extends WallpaperService {
 				}
 				
 				if(availableStrings.length == 0) {
-					Toast.makeText(getBaseContext(), R.string.toast_error_loading_preferences, Toast.LENGTH_LONG).show();
-					return;
+					throw new Exception("Somehow zero available strings at this point..?");
 				}
 				
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
 				try {
-					desiredFPS = 1000 / Integer.getInteger(prefs.getString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))));
+					desiredFPS = 1000 / Integer.parseInt(prefs.getString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))));
 				} catch(Exception e) {
+					e.printStackTrace();
+					Toast.makeText(getBaseContext(), R.string.toast_error_parsing_desired_fps, Toast.LENGTH_LONG).show();
 					prefs.edit().putString("settings_desired_fps", Integer.toString(getResources().getInteger(R.integer.label_settings_desired_fps_default))).commit();
 					desiredFPS = 1000 / getResources().getInteger(R.integer.label_settings_desired_fps_default);
 				}
+				return true;
+			} catch(Exception e) {
+				PreferenceManager.setDefaultValues(getBaseContext(), PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE, R.xml.livetextbackground_settings, true);
+				Toast.makeText(getBaseContext(), R.string.toast_error_loading_preferences, Toast.LENGTH_LONG).show();
+				return loadSettings();
+			}
+		}
+		
+		private void setupLogicHandler(boolean on) {
+			if(on) {
+				if(logicTimer != null)
+					setupLogicHandler(false);
+				
+				if(!loadSettings()) {
+					Toast.makeText(getBaseContext(), R.string.toast_fatal_error_loading_preferences, Toast.LENGTH_LONG).show();
+					return;
+				}
+				
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
 					@Override

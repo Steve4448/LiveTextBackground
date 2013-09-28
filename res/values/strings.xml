@@ -29,7 +29,10 @@
     <string name="label_settings_text_minimum_preview">Minimum</string>
     <string name="label_settings_text_maximum_preview">Maximum</string>
     
-    <string name="toast_error_loading_preferences">Error Loading Preferences&#8230;</string>
+    <string name="toast_error_parsing_desired_fps">Desired FPS settings invalid&#8230;</string>
+    <string name="toast_error_loading_preferences">Error Loading Preferences&#8230;\nReturned all to default</string>
+    <string name="toast_fatal_error_loading_preferences">Fatal Error Loading Preferences\nCan\'t continue!</string>
+    
     <string name="label_settings_text_array_entry_remove">Remove</string>
     <string name="label_settings_text_array_entry_add">New Entry</string>
     
