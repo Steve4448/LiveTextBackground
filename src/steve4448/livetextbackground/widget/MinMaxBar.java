@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -22,15 +23,19 @@ public class MinMaxBar extends View {
 	public static final int THUMB_INNER_COLOR_PRESSED = Color.argb(255, 200, 200, 200);
 	public static final int THUMB_INNER_RING_COLOR = Color.argb(200, 55, 55, 55);
 	
-	private Paint paint;
+	private Paint paintFilled;
+	private Paint paintStroked;
 	
 	private OnMinMaxBarChangeListener onMinMaxBarChangeListener;
 	
-	private float locationMinXThumb = 0;
-	private float locationMaxXThumb = 24;
-	
 	private float absoluteMinimum = 0, actualMinimum = 0;
 	private float absoluteMaximum = 100, actualMaximum = 0;
+	
+	private RectF barRect;
+	private PointF thumbMinPoint;
+	private PointF thumbMaxPoint;
+	
+	private boolean limitMinMax = false;
 	
 	private boolean draggingMinXThumb = false;
 	private boolean draggingMaxXThumb = false;
@@ -51,14 +56,20 @@ public class MinMaxBar extends View {
 	}
 	
 	public void init(Context context, AttributeSet attrs, int defStyle) {
-		paint = new Paint();
-		paint.setAntiAlias(true);
+		paintFilled = new Paint();
+		paintFilled.setStyle(Paint.Style.FILL);
+		paintFilled.setAntiAlias(true);
+		
+		paintStroked = new Paint();
+		paintStroked.setStyle(Paint.Style.STROKE);
+		paintStroked.setAntiAlias(true);
 		if(attrs != null) {
 			TypedArray extraAttrs = context.obtainStyledAttributes(attrs, R.styleable.MinMaxBar);
 			actualMinimum = extraAttrs.getFloat(R.styleable.MinMaxBar_minDefault, 0);
 			actualMaximum = extraAttrs.getFloat(R.styleable.MinMaxBar_maxDefault, 100);
 			absoluteMinimum = extraAttrs.getFloat(R.styleable.MinMaxBar_min, actualMinimum);
 			absoluteMaximum = extraAttrs.getFloat(R.styleable.MinMaxBar_max, actualMaximum);
+			limitMinMax = extraAttrs.getBoolean(R.styleable.MinMaxBar_limitMinMax, limitMinMax);
 			extraAttrs.recycle();
 		}
 	}
@@ -71,33 +82,57 @@ public class MinMaxBar extends View {
 	}
 	
 	@Override
+	public void onSizeChanged(int w, int h, int oldw, int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		barRect = new RectF(MAX_CIRCLE_RADIUS, h / 2 - h / 6, w - MAX_CIRCLE_RADIUS, h / 2 + h / 6);
+		thumbMinPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
+		thumbMaxPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
+	}
+	
+	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		locationMinXThumb = actualMinimum == 0 ? 0 : (((actualMinimum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * (getWidth() - MAX_CIRCLE_RADIUS * 2));
-		locationMaxXThumb = actualMaximum == 0 ? 0 : (((actualMaximum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * (getWidth() - MAX_CIRCLE_RADIUS * 2));
-		canvas.translate(MAX_CIRCLE_RADIUS, 0);
-		paint.setColor(BAR_COLOR);
-		canvas.drawRect(0, getHeight() / 2 - getHeight() / 6, getWidth() - (MAX_CIRCLE_RADIUS * 2), getHeight() / 2 + getHeight() / 6, paint);
-		if(isEnabled()) {
-			paint.setColor(draggingMinXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
-			canvas.drawCircle(locationMinXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS, paint);
-			paint.setColor(draggingMaxXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
-			canvas.drawCircle(locationMaxXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS, paint);
+		thumbMinPoint.x = actualMinimum == 0 ? 0 : (((actualMinimum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * barRect.right);
+		thumbMaxPoint.x = actualMaximum == 0 ? 0 : (((actualMaximum - absoluteMinimum) / (absoluteMaximum - absoluteMinimum)) * barRect.right);
+		paintFilled.setColor(BAR_COLOR);
+		canvas.drawRect(barRect, paintFilled);
+		
+		//Thumb Min:
+		{
+			if(isEnabled()) {
+				paintFilled.setColor(draggingMinXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
+				canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS, paintFilled);
+			}
+			paintFilled.setColor(draggingMinXThumb ? THUMB_INNER_COLOR_PRESSED : isEnabled() ? THUMB_INNER_COLOR : THUMB_INNER_COLOR_PRESSED);
+			canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS / 2, paintFilled);
+			
+			if(isEnabled()) {
+				paintStroked.setColor(THUMB_OUTER_RING_COLOR);
+				canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS, paintStroked);
+			}
+			
+			paintStroked.setColor(THUMB_INNER_RING_COLOR);
+			canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, MAX_CIRCLE_RADIUS / 2, paintStroked);
 		}
-		paint.setColor(draggingMinXThumb ? THUMB_INNER_COLOR_PRESSED : isEnabled() ? THUMB_INNER_COLOR : THUMB_INNER_COLOR_PRESSED);
-		canvas.drawCircle(locationMinXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS / 2, paint);
-		paint.setColor(draggingMaxXThumb ? THUMB_INNER_COLOR_PRESSED : isEnabled() ? THUMB_INNER_COLOR : THUMB_INNER_COLOR_PRESSED);
-		canvas.drawCircle(locationMaxXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS / 2, paint);
-		if(isEnabled()) {
-			paint.setStyle(Paint.Style.STROKE);
-			paint.setColor(THUMB_OUTER_RING_COLOR);
-			canvas.drawCircle(locationMinXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS, paint);
-			canvas.drawCircle(locationMaxXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS, paint);
+		
+		//Thumb Max:
+		{
+			if(isEnabled()) {
+				paintFilled.setColor(draggingMaxXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
+				canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS, paintFilled);
+			}
+			
+			paintFilled.setColor(draggingMaxXThumb ? THUMB_INNER_COLOR_PRESSED : isEnabled() ? THUMB_INNER_COLOR : THUMB_INNER_COLOR_PRESSED);
+			canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS / 2, paintFilled);
+			
+			if(isEnabled()) {
+				paintStroked.setColor(THUMB_OUTER_RING_COLOR);
+				canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS, paintStroked);
+			}
+			
+			paintStroked.setColor(THUMB_INNER_RING_COLOR);
+			canvas.drawCircle(thumbMaxPoint.x, thumbMaxPoint.y, MAX_CIRCLE_RADIUS / 2, paintStroked);
 		}
-		paint.setColor(THUMB_INNER_RING_COLOR);
-		canvas.drawCircle(locationMinXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS / 2, paint);
-		canvas.drawCircle(locationMaxXThumb, getHeight() / 2, MAX_CIRCLE_RADIUS / 2, paint);
-		paint.setStyle(Paint.Style.FILL);
 	}
 	
 	@Override
@@ -108,66 +143,67 @@ public class MinMaxBar extends View {
 			case MotionEvent.ACTION_DOWN:
 				setPressed(true);
 				attemptMove(event);
-			break;
-			
+				break;
+				
 			case MotionEvent.ACTION_MOVE:
 				getParent().requestDisallowInterceptTouchEvent(true);
 				attemptMove(event);
-			break;
-			
+				break;
+				
 			case MotionEvent.ACTION_UP:
 				setPressed(false);
-			break;
-			
+				break;
+				
 			case MotionEvent.ACTION_CANCEL:
 				setPressed(false);
-			break;
+				break;
 		}
 		return true;
 	}
 	
 	public void attemptMove(MotionEvent event) {
-		RectF pointRect = null, thumbMinXRect = null, thumbMaxXRect = null;
+		PointF locPoint = null;
+		RectF thumbMinXRect = null, thumbMaxXRect = null;
 		if(!draggingMinXThumb && !draggingMaxXThumb) {
-			pointRect = new RectF(event.getX() - MAX_CIRCLE_RADIUS, event.getY() - MAX_CIRCLE_RADIUS, event.getX() + MAX_CIRCLE_RADIUS, event.getY() + MAX_CIRCLE_RADIUS);
-			thumbMinXRect = new RectF(locationMinXThumb, getHeight() / 2 - MAX_CIRCLE_RADIUS, locationMinXThumb + MAX_CIRCLE_RADIUS * 2, getHeight() / 2 + MAX_CIRCLE_RADIUS);
-			thumbMaxXRect = new RectF(locationMaxXThumb, getHeight() / 2 - MAX_CIRCLE_RADIUS, locationMaxXThumb + MAX_CIRCLE_RADIUS * 2, getHeight() / 2 + MAX_CIRCLE_RADIUS);
+			locPoint = new PointF(event.getX(), event.getY());
+			thumbMinXRect = new RectF(thumbMinPoint.x - MAX_CIRCLE_RADIUS, thumbMinPoint.y - MAX_CIRCLE_RADIUS, thumbMinPoint.x + MAX_CIRCLE_RADIUS, thumbMinPoint.y + MAX_CIRCLE_RADIUS);
+			thumbMaxXRect = new RectF(thumbMaxPoint.x - MAX_CIRCLE_RADIUS, thumbMaxPoint.y - MAX_CIRCLE_RADIUS, thumbMaxPoint.x + MAX_CIRCLE_RADIUS, thumbMaxPoint.y + MAX_CIRCLE_RADIUS);
 		}
-		if(draggingMinXThumb || (pointRect != null && RectF.intersects(pointRect, thumbMinXRect))) {
+		if(draggingMinXThumb || (locPoint != null && steve4448.livetextbackground.util.RectF.intersects(locPoint, thumbMinXRect))) {
 			draggingMinXThumb = true;
 			draggingMaxXThumb = false;
-			float newLocationMinXThumb = event.getX() - MAX_CIRCLE_RADIUS;
+			float newLocationMinXThumb = event.getX();
 			
-			if(newLocationMinXThumb < 0)
-				newLocationMinXThumb = 0;
-			else if(newLocationMinXThumb > getWidth() - (MAX_CIRCLE_RADIUS * 2))
-				newLocationMinXThumb = getWidth() - (MAX_CIRCLE_RADIUS * 2);
+			if(newLocationMinXThumb < barRect.left)
+				newLocationMinXThumb = barRect.left;
+			else if(newLocationMinXThumb > barRect.right)
+				newLocationMinXThumb = barRect.right;
 			
-			if(newLocationMinXThumb > locationMaxXThumb) {
-				newLocationMinXThumb = locationMaxXThumb;
+			if(newLocationMinXThumb > thumbMaxPoint.x) {
+				newLocationMinXThumb = thumbMaxPoint.x;
 				draggingMinXThumb = false;
 				draggingMaxXThumb = true;
 			}
 			
-			actualMinimum = absoluteMinimum + (newLocationMinXThumb / (getWidth() - (MAX_CIRCLE_RADIUS * 2))) * (absoluteMaximum - absoluteMinimum);
+			actualMinimum = absoluteMinimum + (newLocationMinXThumb / barRect.right) * (absoluteMaximum - absoluteMinimum);
 			if(onMinMaxBarChangeListener != null)
 				onMinMaxBarChangeListener.onMinValueChanged((int)actualMinimum, true);
-		} else if(draggingMaxXThumb || (pointRect != null && RectF.intersects(pointRect, thumbMaxXRect))) {
+		} else if(draggingMaxXThumb || (locPoint != null && steve4448.livetextbackground.util.RectF.intersects(locPoint, thumbMaxXRect))) {
 			draggingMinXThumb = false;
 			draggingMaxXThumb = true;
-			float newLocationMaxXThumb = event.getX() - MAX_CIRCLE_RADIUS;
+			float newLocationMaxXThumb = event.getX();
 			
-			if(newLocationMaxXThumb < 0)
-				newLocationMaxXThumb = 0;
-			else if(newLocationMaxXThumb > getWidth() - (MAX_CIRCLE_RADIUS * 2))
-				newLocationMaxXThumb = getWidth() - (MAX_CIRCLE_RADIUS * 2);
+			if(newLocationMaxXThumb < barRect.left)
+				newLocationMaxXThumb = barRect.left;
+			else if(newLocationMaxXThumb > barRect.right)
+				newLocationMaxXThumb = barRect.right;
 			
-			if(newLocationMaxXThumb < locationMinXThumb) {
-				newLocationMaxXThumb = locationMinXThumb;
+			if(newLocationMaxXThumb < thumbMinPoint.x) {
+				newLocationMaxXThumb = thumbMinPoint.x;
 				draggingMinXThumb = true;
 				draggingMaxXThumb = false;
 			}
-			actualMaximum = absoluteMinimum + (newLocationMaxXThumb / (getWidth() - (MAX_CIRCLE_RADIUS * 2))) * (absoluteMaximum - absoluteMinimum);
+			actualMaximum = absoluteMinimum + (newLocationMaxXThumb / barRect.right) * (absoluteMaximum - absoluteMinimum);
 			if(onMinMaxBarChangeListener != null)
 				onMinMaxBarChangeListener.onMaxValueChanged((int)actualMaximum, true);
 		}

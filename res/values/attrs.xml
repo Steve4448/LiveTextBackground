@@ -5,6 +5,7 @@
 		<attr name="max" format="integer" />
 		<attr name="minDefault" format="integer" />
 		<attr name="maxDefault" format="integer" />
+		<attr name="limitMinMax" format="boolean" />
 	</declare-styleable>
 	
     <declare-styleable name="ColorPickerPreference">
