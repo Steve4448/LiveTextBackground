@@ -47,6 +47,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private int desiredFPS;
 		private int textSizeMin, textSizeMax;
 		private boolean tried = false;
+		private boolean applyShadow = false;
 		
 		private LiveTextBackgroundEngine() {
 			paint.setAntiAlias(true);
@@ -115,6 +116,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 				}
 				
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
+				applyShadow = prefs.getBoolean("settings_shadow_layer", getResources().getBoolean(R.bool.label_settings_shadow_layer_default));
+				
 				try {
 					desiredFPS = 1000 / prefs.getInt("settings_desired_fps", getResources().getInteger(R.integer.label_settings_desired_fps_default));
 				} catch(Exception e) {
@@ -240,7 +243,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		private void draw() {
-			// long startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = null;
 			try {
@@ -256,13 +259,14 @@ public class LiveTextBackgroundService extends WallpaperService {
 						paint.setTextSize(t.size);
 						canvas.drawText(t.text, t.x, t.y, paint);
 					}
-					paint.setShadowLayer(1, 2, 2, Color.BLACK);
+					if(applyShadow)
+						paint.setShadowLayer(1, 2, 2, Color.BLACK);
 				}
 			} finally {
 				if(canvas != null)
 					holder.unlockCanvasAndPost(canvas);
 			}
-			// System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
+			System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }

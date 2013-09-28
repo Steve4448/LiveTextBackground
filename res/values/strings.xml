@@ -21,6 +21,10 @@
     <string name="label_settings_collision_desc">Allows a collision check with a particle effect.</string>
     <bool name="label_settings_collision_default">true</bool>
     
+    <string name="label_settings_shadow_layer_label">Shadow Layer</string>
+    <string name="label_settings_shadow_layer_desc">Applies a shadow to any text and particles.</string>
+    <bool name="label_settings_shadow_layer_default">true</bool>
+    
     <string name="label_settings_background_color">Background Color</string>
     
     <string name="label_settings_category_advanced">Advanced Settings</string>

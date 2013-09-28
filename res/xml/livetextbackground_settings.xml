@@ -19,6 +19,11 @@
 				android:title="@string/label_settings_collision_label"
 				android:summary="@string/label_settings_collision_desc"
 				android:defaultValue="@bool/label_settings_collision_default" />
+		<CheckBoxPreference
+				android:key="settings_shadow_layer"
+				android:title="@string/label_settings_shadow_layer_label"
+				android:summary="@string/label_settings_shadow_layer_desc"
+				android:defaultValue="@bool/label_settings_shadow_layer_default" />
 	</PreferenceScreen>
 	<steve4448.livetextbackground.preference.ColorPickerPreference
 			android:title="@string/label_settings_background_color" />
