@@ -212,11 +212,12 @@ public class MinMaxBar extends View {
 	
 	@Override
 	public void setPressed(boolean pressed) {
+		super.setPressed(pressed);
 		if(!pressed) {
 			draggingMinXThumb = false;
 			draggingMaxXThumb = false;
+			invalidate();
 		}
-		super.setPressed(pressed);
 	}
 	
 	public void setMinMaxAbsolutes(int min, int max) {
