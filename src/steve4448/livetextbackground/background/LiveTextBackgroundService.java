@@ -93,17 +93,25 @@ public class LiveTextBackgroundService extends WallpaperService {
 				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
 				textSizeMin = prefs.getInt("settings_text_size_variance_min", getResources().getInteger(R.integer.label_settings_text_size_default_min));
 				textSizeMax = prefs.getInt("settings_text_size_variance_max", getResources().getInteger(R.integer.label_settings_text_size_default_max));
+
 				String[] defaultStrings = getResources().getString(R.string.label_settings_text_default).split("\\|");
-				int prefsStrings = prefs.getInt("settings_text", -1);
-				availableStrings = prefsStrings == -1 ? defaultStrings : new String[prefsStrings];
-				if(prefsStrings != -1) {
-					for(int i = 0; i < availableStrings.length; i++) {
-						availableStrings[i] = prefs.getString("settings_text" + i, null);
+				try {
+					int prefsStrings = prefs.getInt("settings_text", -1);
+					if(prefsStrings > 0) {
+						availableStrings = new String[prefsStrings];
+						for(int i = 0; i < availableStrings.length; i++) {
+							availableStrings[i] = prefs.getString("settings_text" + i, null);
+						}
+					} else {
+						throw new Exception("Invalid amount of strings.");
 					}
+				} catch(Exception e) {
+					prefs.edit().putString("settings_text", getResources().getString(R.string.label_settings_text_default)).commit();
+					availableStrings = defaultStrings;
 				}
 				
 				if(availableStrings.length == 0) {
-					throw new Exception("Somehow zero available strings at this point..?");
+					throw new Exception("Zero available strings at this point..?");
 				}
 				
 				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
@@ -117,6 +125,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				}
 				return true;
 			} catch(Exception e) {
+				e.printStackTrace();
 				PreferenceManager.setDefaultValues(getBaseContext(), PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE, R.xml.livetextbackground_settings, true);
 				Toast.makeText(getBaseContext(), R.string.toast_error_loading_preferences, Toast.LENGTH_LONG).show();
 				if(!tried) {

@@ -19,6 +19,7 @@ public class StringArrayPreference extends DialogPreference {
 	private ScrollView scrollView;
 	private LinearLayout alterableLayout;
 	private Button addNewEntryButton;
+	private boolean triedToLoad = false;
 	
 	public StringArrayPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -30,36 +31,13 @@ public class StringArrayPreference extends DialogPreference {
 		if(restorePersistedValue) {
 			// Should already be persisted, don't bother...
 		} else {
-			String[] vals = getSharedPreferences().getString(getKey(), (String)defaultValue).split("\\|");
-			SharedPreferences.Editor ed = getSharedPreferences().edit();
-			{
-				ed.putInt(getKey(), vals.length);
-				for(int i = 0; i < vals.length; i++) {
-					ed.putString(getKey() + i, vals[i]);
-				}
-			}
-			ed.commit();
+			applyDefaults((String)defaultValue);
 		}
 	}
 	
 	@Override
 	protected Object onGetDefaultValue(TypedArray a, int index) {
 		return a.getString(index);
-	}
-	
-	private void loadCurrentEntries() {
-		if(!hasKey())
-			return;
-		if(scrollView != null) {
-			int amt = getSharedPreferences().getInt(getKey(), -1);
-			for(int i = 0; i < amt; i++) {
-				addNewEntry(getSharedPreferences().getString(getKey() + i, null));
-			}
-			if(alterableLayout.getChildCount() == 2) {
-				Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
-				b.setEnabled(false);
-			}
-		}
 	}
 	
 	@Override
@@ -78,8 +56,7 @@ public class StringArrayPreference extends DialogPreference {
 				addNewEntry();
 			}
 		});
-		
-		loadCurrentEntries();
+		loadEntries();
 		super.onBindDialogView(view);
 	}
 	
@@ -88,6 +65,8 @@ public class StringArrayPreference extends DialogPreference {
 	}
 	
 	public void addNewEntry(String initText) {
+		if(scrollView == null)
+			return;
 		RelativeLayout wrapper = new RelativeLayout(getContext());
 		EditText newTextEdit = new EditText(getContext());
 		newTextEdit.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -149,18 +128,60 @@ public class StringArrayPreference extends DialogPreference {
 			for(int i = 0; i < s.length; i++) {
 				s[i] = ((EditText)((RelativeLayout)alterableLayout.getChildAt(i)).getChildAt(0)).getText().toString();
 			}
-			// Would use putStringSet, but that exists in API >= 11, going for API 8.
-			// Could also just use persistString with a separator, but this seems much more dynamic in the long-run with seemingly little to no potential to fail.
-			SharedPreferences.Editor ed = getSharedPreferences().edit();
-			{
-				ed.putInt(getKey(), s.length);
-				for(int i = 0; i < s.length; i++) {
-					ed.putString(getKey() + i, s[i]);
-				}
-			}
-			ed.commit();
+			saveEntries(s);
 		}
 		scrollView = null;
 	}
 	
+	public void loadEntries() {
+		System.out.print("Loading entries...");
+		try {
+			int amt = getSharedPreferences().getInt(getKey(), -1);
+			System.out.print(" " + amt + " found:");
+			for(int i = 0; i < amt; i++) {
+				System.out.print((i == 0 ? " " : ", ") + getSharedPreferences().getString(getKey() + i, null));
+				addNewEntry(getSharedPreferences().getString(getKey() + i, null));
+			}
+			System.out.println(" Done.");
+		} catch(ClassCastException e) {
+			System.out.println(" ClassCastException, attempting to read as a string...");
+			String[] str = getSharedPreferences().getString(getKey(), null).split("\\|");
+			saveEntries(str);
+			if(!triedToLoad) {
+				triedToLoad = true;
+				loadEntries();
+			}
+			triedToLoad = false;
+		}
+		
+		if(alterableLayout.getChildCount() == 2) {
+			Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
+			b.setEnabled(false);
+		}
+	}
+	
+	public void applyDefaults(String defaults) {
+		String d = null;
+		try {
+			d = getSharedPreferences().getString(getKey(), defaults);
+		} catch(Exception e) {}
+		
+		saveEntries((d != null ? d : defaults).split("\\|"));
+	}
+	
+	public void saveEntries(String[] entries) {
+		System.out.print("Saving entries... " + entries.length + " total:");
+		SharedPreferences.Editor ed = getSharedPreferences().edit();
+		{
+			// Would use putStringSet, but that exists in API >= 11, going for API 8.
+			// Could also just use persistString with a separator, but this seems much more dynamic in the long-run with seemingly little to no potential to fail.
+			ed.putInt(getKey(), entries.length);
+			for(int i = 0; i < entries.length; i++) {
+				System.out.print((i == 0 ? " " : ", ") + entries[i]);
+				ed.putString(getKey() + i, entries[i]);
+			}
+		}
+		ed.commit();
+		System.out.println(" Done.");
+	}
 }
