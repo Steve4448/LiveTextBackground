@@ -1,6 +1,7 @@
 package steve4448.livetextbackground.preference;
 
 import steve4448.livetextbackground.R;
+import steve4448.livetextbackground.util.ViewHelper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -31,7 +32,12 @@ public class StringArrayPreference extends DialogPreference {
 		if(restorePersistedValue) {
 			// Should already be persisted, don't bother...
 		} else {
-			applyDefaults((String)defaultValue);
+			String d = null;
+			try {
+				d = getSharedPreferences().getString(getKey(), (String)defaultValue);
+			} catch(Exception e) {}
+			
+			saveEntries((d != null ? d : (String)defaultValue).split("\\|"));
 		}
 	}
 	
@@ -69,23 +75,31 @@ public class StringArrayPreference extends DialogPreference {
 			return;
 		RelativeLayout wrapper = new RelativeLayout(getContext());
 		EditText newTextEdit = new EditText(getContext());
+		newTextEdit.setId(ViewHelper.findUnusedId(wrapper));
 		newTextEdit.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
 		if(initText != null)
 			newTextEdit.setText(initText);
 		Button newButton = new Button(getContext(), null, android.R.attr.buttonStyleSmall);
+		newButton.setId(ViewHelper.findUnusedId(wrapper));
 		newButton.setText(R.string.label_settings_text_array_entry_remove);
 		// newButton.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL | Gravity.TOP);
 		
 		RelativeLayout.LayoutParams textEditLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		textEditLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		textEditLayout.addRule(RelativeLayout.LEFT_OF, newButton.getId());
-		wrapper.addView(newTextEdit, textEditLayout);
-		
+
 		RelativeLayout.LayoutParams buttonViewLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_TOP, newTextEdit.getId());
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_BOTTOM, newTextEdit.getId());
-		wrapper.addView(newButton, buttonViewLayout);
+		
+		newTextEdit.setLayoutParams(textEditLayout);
+		newButton.setLayoutParams(buttonViewLayout);
+		
+		wrapper.addView(newTextEdit);
+		wrapper.addView(newButton);
+		
+
 		alterableLayout.addView(wrapper, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 		
 		// TODO: Is there a better way to make it so the "New Entry" button can be kept at the bottom without re-adding?
@@ -158,15 +172,6 @@ public class StringArrayPreference extends DialogPreference {
 			Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
 			b.setEnabled(false);
 		}
-	}
-	
-	public void applyDefaults(String defaults) {
-		String d = null;
-		try {
-			d = getSharedPreferences().getString(getKey(), defaults);
-		} catch(Exception e) {}
-		
-		saveEntries((d != null ? d : defaults).split("\\|"));
 	}
 	
 	public void saveEntries(String[] entries) {
