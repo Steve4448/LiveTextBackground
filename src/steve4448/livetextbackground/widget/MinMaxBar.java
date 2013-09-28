@@ -74,13 +74,6 @@ public class MinMaxBar extends View {
 	}
 	
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		//TODO: Actually listen to what's required/recommended.
-		this.setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), 60);
-	}
-	
-	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		barRect = new RectF(MAX_CIRCLE_RADIUS, h / 2 - h / 6, w - MAX_CIRCLE_RADIUS, h / 2 + h / 6);

@@ -32,7 +32,7 @@
         <steve4448.livetextbackground.widget.MinMaxBar
             android:id="@+id/minMaxBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_toLeftOf="@+id/numMax"
             additionalPrefs:max="@integer/label_settings_text_size_max"
             additionalPrefs:maxDefault="@integer/label_settings_text_size_default_max"
