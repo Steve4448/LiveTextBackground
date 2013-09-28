@@ -84,7 +84,7 @@ public class MinMaxBar extends View {
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		barRect = new RectF(MAX_CIRCLE_RADIUS * 5, h / 2 - h / 6, w - (MAX_CIRCLE_RADIUS * 5), h / 2 + h / 6);
+		barRect = new RectF(MAX_CIRCLE_RADIUS, h / 2 - h / 6, w - MAX_CIRCLE_RADIUS, h / 2 + h / 6);
 		thumbMinPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 		thumbMaxPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 	}
