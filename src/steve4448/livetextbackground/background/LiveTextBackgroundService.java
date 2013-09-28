@@ -47,6 +47,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private int desiredFPS;
 		private int textSizeMin, textSizeMax;
 		private boolean tried = false;
+		private boolean hasShadow = false;
 		private boolean applyShadow = false;
 		
 		private LiveTextBackgroundEngine() {
@@ -259,8 +260,13 @@ public class LiveTextBackgroundService extends WallpaperService {
 						paint.setTextSize(t.size);
 						canvas.drawText(t.text, t.x, t.y, paint);
 					}
-					if(applyShadow)
+					if(!hasShadow && applyShadow) {
 						paint.setShadowLayer(1, 2, 2, Color.BLACK);
+						hasShadow = true;
+					} else if(hasShadow && !applyShadow) {
+						paint.setShadowLayer(0, 0, 0, Color.BLACK);
+						hasShadow = false;
+					}
 				}
 			} finally {
 				if(canvas != null)
