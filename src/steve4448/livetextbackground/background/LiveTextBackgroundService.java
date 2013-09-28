@@ -10,7 +10,6 @@ import steve4448.livetextbackground.background.object.ExplosionParticle;
 import steve4448.livetextbackground.background.object.ExplosionParticleGroup;
 import steve4448.livetextbackground.background.object.TextObject;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -32,7 +31,6 @@ public class LiveTextBackgroundService extends WallpaperService {
 	
 	private class LiveTextBackgroundEngine extends Engine {
 		private Paint paintText;
-		private Paint paintRect;
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private CopyOnWriteArrayList<ExplosionParticleGroup> textExplObj = new CopyOnWriteArrayList<ExplosionParticleGroup>();
 		private Timer logicTimer;
@@ -56,8 +54,6 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private LiveTextBackgroundEngine() {
 			paintText = new Paint();
-			paintRect = new Paint();
-			paintRect.setStyle(Paint.Style.FILL);
 			paintText.setAntiAlias(true);
 			paintText.setTypeface(Typeface.SANS_SERIF);
 			paintText.setStyle(Paint.Style.FILL);
@@ -267,11 +263,13 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null) {
 					canvas.drawColor(Color.DKGRAY);
 					for(ExplosionParticleGroup p : textExplObj) {
-						paintRect.setColor(p.color);
+						p.paint.setColor(p.color);
 						for(int i = 0; i < p.arr.length; i++) {
 							ExplosionParticle p2 = p.arr[i];
-							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, paintRect);
+							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, p.paint);
 						}
+						if(applyShadow)
+							p.paint.setShadowLayer(1, 2, 2, Color.argb(Color.alpha(p.color), 0, 0, 0));
 					}
 					for(TextObject t : textObj) {
 						if(t.cachedText != null)
@@ -279,11 +277,9 @@ public class LiveTextBackgroundService extends WallpaperService {
 					}
 					
 					if(!hasShadow && applyShadow) {
-						paintRect.setShadowLayer(1, 2, 2, Color.BLACK);
 						paintText.setShadowLayer(1, 2, 2, Color.BLACK);
 						hasShadow = true;
 					} else if(hasShadow && !applyShadow) {
-						paintRect.setShadowLayer(0, 0, 0, Color.BLACK);
 						paintText.setShadowLayer(0, 0, 0, Color.BLACK);
 						hasShadow = false;
 					}
