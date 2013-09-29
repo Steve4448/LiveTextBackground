@@ -1,12 +1,17 @@
 package steve4448.livetextbackground.activity;
 
+import java.io.File;
+import java.io.IOException;
+
 import steve4448.livetextbackground.R;
 import steve4448.livetextbackground.util.PreferenceHelper;
+import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -14,6 +19,7 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 public class PreferencesActivity extends PreferenceActivity {
+	private File backgroundFile;
 	
 	@SuppressWarnings("deprecation")
 	@Override
@@ -25,9 +31,17 @@ public class PreferencesActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				try {
-					Intent photoPickerIntent = new Intent(Intent.ACTION_PICK); 
+					Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 					photoPickerIntent.setType("image/*");
-			        startActivityForResult(Intent.createChooser(photoPickerIntent, getResources().getString(R.string.label_settins_select_an_image)), PreferenceHelper.PHOTO_PICKER_REQUEST_CODE);
+					photoPickerIntent.putExtra("crop", "true");
+					photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, getBackgroundUri());
+					photoPickerIntent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+					photoPickerIntent.putExtra("outputX", WallpaperManager.getInstance(getBaseContext()).getDesiredMinimumWidth());
+					photoPickerIntent.putExtra("outputY", WallpaperManager.getInstance(getBaseContext()).getDesiredMinimumHeight());
+					photoPickerIntent.putExtra("aspectX", 1);
+					photoPickerIntent.putExtra("aspectY", 1);
+					photoPickerIntent.putExtra("scale", true);
+					startActivityForResult(Intent.createChooser(photoPickerIntent, getResources().getString(R.string.label_settins_select_an_image)), PreferenceHelper.PHOTO_PICKER_REQUEST_CODE);
 				} catch(ActivityNotFoundException e) {
 					e.printStackTrace();
 					Toast.makeText(getBaseContext(), R.string.toast_no_image_picker_activity_found, Toast.LENGTH_LONG).show();
@@ -37,17 +51,39 @@ public class PreferencesActivity extends PreferenceActivity {
 		});
 	}
 	
-	@SuppressWarnings("deprecation")
-    @Override
+	private Uri getBackgroundUri() {
+		return Uri.fromFile(getBackgroundFile());
+	}
+	
+	private File getBackgroundFile() {
+		if(backgroundFile == null) {
+			try {
+				if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+					System.out.println(Environment.getExternalStorageDirectory().getAbsolutePath());
+					File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + PreferenceHelper.LIVE_TEXT_BACKGROUND_PATH);
+					System.out.println(directory.getAbsolutePath());
+					directory.mkdirs();
+					File file = new File(directory, PreferenceHelper.BACKGROUND_FILE);
+					System.out.println(file.getAbsolutePath());
+					file.createNewFile();
+					backgroundFile = file;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return backgroundFile;
+	}
+	
+	
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == PreferenceHelper.PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
+		if(resultCode != RESULT_OK) {
+			Toast.makeText(getBaseContext(), R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_LONG).show();
+		} else if(requestCode == PreferenceHelper.PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
 			try {
-				Uri obtainedData = (Uri)data.getData();
-				String[] projection = { MediaStore.Images.Media.DATA };
-		        Cursor cursor = managedQuery(obtainedData, projection, null, null, null);
-		        cursor.moveToFirst();
-		        getSharedPreferences(PreferenceHelper.PREFERENCE_NAME, MODE_PRIVATE).edit().putString("settings_background_image", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))).commit();
+				getSharedPreferences(PreferenceHelper.PREFERENCE_NAME, MODE_PRIVATE).edit().putString(getResources().getString(R.string.settings_background_image), /*cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))*/getBackgroundUri().toString()).commit();
 			} catch(Exception e) {
 				e.printStackTrace();
 				Toast.makeText(getBaseContext(), R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_LONG).show();

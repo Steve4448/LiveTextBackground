@@ -1,7 +1,5 @@
 package steve4448.livetextbackground.util;
 
-import java.io.File;
-
 import steve4448.livetextbackground.R;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,6 +12,8 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 public class PreferenceHelper {
+	public static final String LIVE_TEXT_BACKGROUND_PATH = "LiveTextBackground";
+	public static final String BACKGROUND_FILE = "The Background.png";
 	public static final String PREFERENCE_NAME = "livetextbackground_settings";
 	public static final int PHOTO_PICKER_REQUEST_CODE = 1;
 	private SharedPreferences actualPrefs;
@@ -122,7 +122,7 @@ public class PreferenceHelper {
 				try {
 					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
 					if(uri != null)
-						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.fromFile(new File(uri)));
+						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
 				} catch(Exception e) {
 					e.printStackTrace();
 					backgroundImage = null;
