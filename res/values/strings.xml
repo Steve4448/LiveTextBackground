@@ -22,10 +22,12 @@
     <bool name="label_settings_collision_default">true</bool>
     
     <string name="label_settings_shadow_layer_label">Shadow Layer</string>
-    <string name="label_settings_shadow_layer_desc">Applies a shadow to any text and particles.</string>
+    <string name="label_settings_shadow_layer_desc">Casts a shadow on the text and particles.</string>
     <bool name="label_settings_shadow_layer_default">true</bool>
     
     <string name="label_settings_background_color">Background Color</string>
+    <string name="label_settings_background_image_label">Background Image</string>
+    <string name="label_settings_background_image_desc">Allows you to choose a background.</string>
     
     <string name="label_settings_category_advanced">Advanced Settings</string>
     <string name="label_settings_desired_fps_label">FPS</string>
@@ -40,6 +42,8 @@
     <string name="toast_error_parsing_desired_fps">Desired FPS settings invalid&#8230;\nReturned to default.</string>
     <string name="toast_error_loading_preferences">Error Loading Preferences&#8230;\nReturned all to default.</string>
     <string name="toast_fatal_error_loading_preferences">Fatal Error Loading Preferences\nCan\'t continue!</string>
+    <string name="toast_no_image_picker_activity_found">Could not open an image picker&#8230;</string>
+    <string name="toast_could_not_load_image_picker_data">Could not open image&#8230;?</string>
     
     <string name="label_settings_text_array_entry_remove">Remove</string>
     <string name="label_settings_text_array_entry_add">New Entry</string>
