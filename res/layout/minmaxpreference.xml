@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:additionalPrefs="http://schemas.android.com/apk/res/steve4448.livetextbackground"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" >
 
@@ -32,11 +31,7 @@
             android:id="@+id/minMaxBar"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_toLeftOf="@+id/numMax"
-            additionalPrefs:max="@integer/label_settings_text_size_max"
-            additionalPrefs:maxDefault="@integer/label_settings_text_size_default_max"
-            additionalPrefs:min="@integer/label_settings_text_size_min"
-            additionalPrefs:minDefault="@integer/label_settings_text_size_default_min" />
+            android:layout_toLeftOf="@+id/numMax" />
     </RelativeLayout>
 
 </ScrollView>

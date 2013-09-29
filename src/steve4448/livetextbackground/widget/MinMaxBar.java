@@ -65,10 +65,7 @@ public class MinMaxBar extends View {
 		paintStroked.setAntiAlias(true);
 		if(attrs != null) {
 			TypedArray extraAttrs = context.obtainStyledAttributes(attrs, R.styleable.MinMaxBar);
-			actualMinimum = extraAttrs.getFloat(R.styleable.MinMaxBar_minDefault, 0);
-			actualMaximum = extraAttrs.getFloat(R.styleable.MinMaxBar_maxDefault, 100);
 			singleThumbMode = extraAttrs.getBoolean(R.styleable.MinMaxBar_singleThumbMode, singleThumbMode);
-			setMinMaxAbsolutes(extraAttrs.getFloat(R.styleable.MinMaxBar_min, actualMinimum), extraAttrs.getFloat(R.styleable.MinMaxBar_max, actualMaximum));
 			extraAttrs.recycle();
 		}
 	}

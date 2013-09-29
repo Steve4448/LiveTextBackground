@@ -14,6 +14,10 @@
 				android:summary="@string/label_settings_text_size_variance_desc"
 				additionalPrefs:minKey="settings_text_size_variance_min"
 				additionalPrefs:maxKey="settings_text_size_variance_max"
+	            additionalPrefs:max="@integer/label_settings_text_size_max"
+	            additionalPrefs:maxDefault="@integer/label_settings_text_size_default_max"
+	            additionalPrefs:min="@integer/label_settings_text_size_min"
+	            additionalPrefs:minDefault="@integer/label_settings_text_size_default_min"
 				additionalPrefs:unitSuffix="px" />
 		<CheckBoxPreference
 				android:key="settings_collision"
@@ -34,6 +38,9 @@
 				android:title="@string/label_settings_desired_fps_label"
 				android:summary="@string/label_settings_desired_fps_desc"
 				android:defaultValue="@integer/label_settings_desired_fps_default"
+	            additionalPrefs:max="@integer/label_settings_desired_fps_default_max"
+	            additionalPrefs:min="@integer/label_settings_desired_fps_default_min"
+	            additionalPrefs:minDefault="@integer/label_settings_desired_fps_default"
 				additionalPrefs:unitSuffix=" FPS" />
 	</PreferenceScreen>
 </PreferenceScreen>

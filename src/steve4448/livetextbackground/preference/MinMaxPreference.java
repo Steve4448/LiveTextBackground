@@ -14,6 +14,7 @@ import android.widget.TextView;
 public class MinMaxPreference extends DialogPreference {
 	public String keyMin = null, keyMax = null, unitSuffix = null;
 	public int min = 0, max = 0;
+	public int absMin = 0, absMax = 100;
 	
 	public MinMaxPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -25,6 +26,11 @@ public class MinMaxPreference extends DialogPreference {
 			keyMax = extraAttrs.getString(R.styleable.MinMaxPreference_maxKey);
 		if(extraAttrs.hasValue(R.styleable.MinMaxPreference_unitSuffix))
 			unitSuffix = extraAttrs.getString(R.styleable.MinMaxPreference_unitSuffix);
+		
+		min = extraAttrs.getInteger(R.styleable.MinMaxPreference_minDefault, absMin);
+		max = extraAttrs.getInteger(R.styleable.MinMaxPreference_maxDefault, absMax);
+		absMin = extraAttrs.getInteger(R.styleable.MinMaxPreference_min, absMin);
+		absMax = extraAttrs.getInteger(R.styleable.MinMaxPreference_max, absMax);
 		extraAttrs.recycle();
 	}
 	
@@ -36,15 +42,9 @@ public class MinMaxPreference extends DialogPreference {
 		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.minMaxBar);
 		if(hasKey()) {
 			min = getPersistedInt(min);
-		} else {
-			if(keyMin == null)
-				min = (int)minMaxBar.getMaximum();
 		}
-		if(keyMin != null) {
-			min = getSharedPreferences().getInt(keyMin, min);
-			max = keyMax != null ? getSharedPreferences().getInt(keyMax, max) : (int)minMaxBar.getMaximum();
-			
-		}
+		min = keyMin != null ? getSharedPreferences().getInt(keyMin, min) : min;
+		max = keyMax != null ? getSharedPreferences().getInt(keyMax, max) : max;
 		if(keyMax == null) {
 			minMaxBar.setSingleThumbMode(true);
 			maxTextView.setVisibility(View.INVISIBLE);
@@ -63,6 +63,7 @@ public class MinMaxPreference extends DialogPreference {
 			}
 		};
 		minMaxBar.setOnMinMaxBarChangeListener(minMaxBarChangeListener);
+		minMaxBar.setMinMaxAbsolutes(absMin, absMax);
 		minMaxBar.setMinimum(min);
 		minMaxBar.setMaximum(max);
 	}
