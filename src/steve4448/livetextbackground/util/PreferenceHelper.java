@@ -24,6 +24,7 @@ public class PreferenceHelper {
 	public boolean collisionEnabled;
 	public boolean applyShadow;
 	public int desiredFPS;
+	public boolean backgroundImageEnabled;
 	public Bitmap backgroundImage;
 	
 	public PreferenceHelper(final Context context) {
@@ -106,7 +107,16 @@ public class PreferenceHelper {
 					actualPrefs.edit().putInt(r.getString(R.string.settings_desired_fps), r.getInteger(R.integer.label_settings_desired_fps_default)).commit();
 				}
 			
-			if(key == null || key == r.getString(R.string.settings_background_image))
+			if(key == null || key == r.getString(R.string.settings_enable_background_image)) {
+				try {
+					backgroundImageEnabled = actualPrefs.getBoolean(r.getString(R.string.settings_enable_background_image), r.getBoolean(R.bool.label_settings_background_enabled));
+				} catch(ClassCastException e) {
+					backgroundImageEnabled = r.getBoolean(R.bool.label_settings_background_enabled);
+					actualPrefs.edit().putBoolean(r.getString(R.string.settings_enable_background_image), r.getBoolean(R.bool.label_settings_background_enabled)).commit();
+				}
+			}
+			
+			if((key == null && backgroundImageEnabled) || (key == r.getString(R.string.settings_background_image) && backgroundImageEnabled))
 				try {
 					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
 					if(uri != null)

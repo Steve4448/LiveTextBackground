@@ -41,7 +41,12 @@
         android:key="@string/settings_background_image"
         android:summary="@string/label_settings_background_image_desc"
         android:title="@string/label_settings_background_image_label" />
-
+    
+    <CheckBoxPreference
+        android:defaultValue="@bool/label_settings_background_enabled"
+        android:key="@string/settings_enable_background_image"
+        android:title="@string/label_settins_use_background_image_label" />
+    
     <PreferenceScreen android:title="@string/label_settings_category_advanced" >
         <steve4448.livetextbackground.preference.MinMaxPreference
             additionalPrefs:max="@integer/label_settings_desired_fps_default_max"

@@ -199,7 +199,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				canvas = holder.lockCanvas();
 				if(canvas != null) {
 					canvas.drawColor(Color.DKGRAY);
-					if(pref.backgroundImage != null)
+					if(pref.backgroundImageEnabled && pref.backgroundImage != null)
 						canvas.drawBitmap(pref.backgroundImage, 0, 0, paintBackground);
 					for(ExplosionParticleGroup p : textExplObj) {
 						p.paint.setColor(p.color);
