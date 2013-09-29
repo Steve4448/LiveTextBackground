@@ -23,8 +23,8 @@ public class TextObject {
 		this.color = color;
 		if((int)dimen.width() <= 0 || (int)dimen.height() <= 0)
 			return;
-		cachedText = Bitmap.createBitmap((int)dimen.width(), (int)dimen.height(), Bitmap.Config.ARGB_8888);
+		cachedText = Bitmap.createBitmap((int)dimen.width() + 2, (int)dimen.height() * 2, Bitmap.Config.ARGB_8888);
 		Canvas c2 = new Canvas(cachedText);
-		c2.drawText(text, 0, (int)dimen.height(), paint);
+		c2.drawText(text, 0, dimen.height(), paint);
 	}
 }

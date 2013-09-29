@@ -211,6 +211,9 @@ public class LiveTextBackgroundService extends WallpaperService {
 							p.paint.setShadowLayer(1, 2, 2, Color.argb(Color.alpha(p.color), 0, 0, 0));
 					}
 					for(TextObject t : textObj) {
+						paintText.setColor(Color.argb(15, 0, 0, 0));
+						canvas.drawRect(t.dimen.left, t.dimen.top, t.dimen.right, t.dimen.bottom, paintText);
+						paintText.setColor(t.color);
 						if(t.cachedText != null)
 							canvas.drawBitmap(t.cachedText, t.dimen.left, t.dimen.top, paintText);
 					}

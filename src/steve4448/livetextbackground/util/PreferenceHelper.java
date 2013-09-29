@@ -27,6 +27,7 @@ public class PreferenceHelper {
 	public int desiredFPS;
 	public boolean backgroundImageEnabled;
 	public Bitmap backgroundImage;
+	public boolean tried = false;
 	
 	public PreferenceHelper(final Context context) {
 		this.context = context;
@@ -43,7 +44,6 @@ public class PreferenceHelper {
 	}
 	
 	public boolean loadSettings(String key) {
-		boolean tried = false;
 		try {
 			Resources r = context.getResources();
 			if(key == null || key == r.getString(R.string.settings_text_size_variance_min))
@@ -61,8 +61,7 @@ public class PreferenceHelper {
 					textSizeMax = r.getInteger(R.integer.label_settings_text_size_default_max);
 					actualPrefs.edit().putInt(r.getString(R.string.settings_text_size_variance_max), textSizeMax).commit();
 				}
-			
-			if(key == null || key == r.getString(R.string.label_settings_text_default)) {
+			if(key == null || key.startsWith(r.getString(R.string.settings_text))) {
 				String[] defaultStrings = r.getString(R.string.label_settings_text_default).split("\\|");
 				try {
 					int prefsStrings = actualPrefs.getInt(r.getString(R.string.settings_text), -1);
@@ -139,7 +138,7 @@ public class PreferenceHelper {
 				boolean fixed = loadSettings(key);
 				if(!fixed)
 					Toast.makeText(context, R.string.toast_fatal_error_loading_preferences, Toast.LENGTH_LONG).show();
-				return(tried = fixed);
+				return fixed;
 			} else
 				return false;
 		}
