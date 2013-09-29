@@ -26,6 +26,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 	
 	private class LiveTextBackgroundEngine extends Engine {
 		public PreferenceHelper pref;
+		private Paint paintBackground;
 		private Paint paintText;
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private CopyOnWriteArrayList<ExplosionParticleGroup> textExplObj = new CopyOnWriteArrayList<ExplosionParticleGroup>();
@@ -43,6 +44,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private LiveTextBackgroundEngine() {
 			pref = new PreferenceHelper(getBaseContext());
+			paintBackground = new Paint();
 			paintText = new Paint();
 			paintText.setAntiAlias(true);
 			paintText.setTypeface(Typeface.SANS_SERIF);
@@ -197,6 +199,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 				canvas = holder.lockCanvas();
 				if(canvas != null) {
 					canvas.drawColor(Color.DKGRAY);
+					if(pref.backgroundImage != null)
+						canvas.drawBitmap(pref.backgroundImage, 0, 0, paintBackground);
 					for(ExplosionParticleGroup p : textExplObj) {
 						p.paint.setColor(p.color);
 						for(int i = 0; i < p.arr.length; i++) {

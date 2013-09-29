@@ -1,11 +1,16 @@
 package steve4448.livetextbackground.util;
 
+import java.io.File;
+
 import steve4448.livetextbackground.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 public class PreferenceHelper {
@@ -19,6 +24,7 @@ public class PreferenceHelper {
 	public boolean collisionEnabled;
 	public boolean applyShadow;
 	public int desiredFPS;
+	public Bitmap backgroundImage;
 	
 	public PreferenceHelper(final Context context) {
 		this.context = context;
@@ -98,6 +104,17 @@ public class PreferenceHelper {
 				} catch(ClassCastException e) {
 					desiredFPS = 1000 / r.getInteger(R.integer.label_settings_desired_fps_default);
 					actualPrefs.edit().putInt(r.getString(R.string.settings_desired_fps), r.getInteger(R.integer.label_settings_desired_fps_default)).commit();
+				}
+			
+			if(key == null || key == r.getString(R.string.settings_background_image))
+				try {
+					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
+					if(uri != null)
+						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.fromFile(new File(uri)));
+				} catch(Exception e) {
+					e.printStackTrace();
+					backgroundImage = null;
+					Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
 				}
 			return true;
 		} catch(Exception e) {
