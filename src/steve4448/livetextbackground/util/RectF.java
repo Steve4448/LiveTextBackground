@@ -7,6 +7,7 @@ public class RectF {
 	public float y;
 	public float width;
 	public float height;
+	
 	public RectF() {
 		this(0, 0, 0);
 	}

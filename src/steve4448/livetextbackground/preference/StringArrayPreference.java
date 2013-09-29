@@ -95,7 +95,7 @@ public class StringArrayPreference extends DialogPreference {
 		RelativeLayout.LayoutParams textEditLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		textEditLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		textEditLayout.addRule(RelativeLayout.LEFT_OF, newButton.getId());
-
+		
 		RelativeLayout.LayoutParams buttonViewLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_TOP, newTextEdit.getId());
@@ -108,7 +108,7 @@ public class StringArrayPreference extends DialogPreference {
 		wrapper.addView(newButton);
 		
 		alterableLayout.addView(wrapper, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
+		
 		addNewEntryButton.bringToFront();
 		
 		newButton.setOnClickListener(new OnClickListener() {

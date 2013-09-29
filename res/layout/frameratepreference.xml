@@ -2,19 +2,19 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:additionalPrefs="http://schemas.android.com/apk/res/steve4448.livetextbackground"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <steve4448.livetextbackground.widget.MinMaxBar
             android:id="@+id/fpsBar"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_toLeftOf="@+id/minFPS"
-            additionalPrefs:min="@integer/label_settings_desired_fps_default_min"
             additionalPrefs:max="@integer/label_settings_desired_fps_default_max"
+            additionalPrefs:min="@integer/label_settings_desired_fps_default_min"
             additionalPrefs:minDefault="@integer/label_settings_desired_fps_default"
             additionalPrefs:singleThumbMode="true" />
 
@@ -27,7 +27,6 @@
             android:gravity="center"
             android:text="@string/placeholder_min_max_bar_default_fps"
             android:width="40dp" />
-
     </RelativeLayout>
 
 </ScrollView>

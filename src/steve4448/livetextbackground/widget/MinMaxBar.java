@@ -29,7 +29,7 @@ public class MinMaxBar extends View {
 	
 	private float absoluteMinimum = 0, actualMinimum = 0;
 	private float absoluteMaximum = 100, actualMaximum = 0;
-
+	
 	public float maxCircleRadius = 24;
 	private RectF barRect;
 	private PointF thumbMinPoint;
@@ -87,7 +87,7 @@ public class MinMaxBar extends View {
 		paintFilled.setColor(BAR_COLOR);
 		canvas.drawRect(barRect, paintFilled);
 		
-		//Thumb Min:
+		// Thumb Min:
 		{
 			if(isEnabled()) {
 				paintFilled.setColor(draggingMinXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
@@ -105,7 +105,7 @@ public class MinMaxBar extends View {
 			canvas.drawCircle(thumbMinPoint.x, thumbMinPoint.y, maxCircleRadius / 2, paintStroked);
 		}
 		
-		//Thumb Max:
+		// Thumb Max:
 		if(!singleThumbMode) {
 			if(isEnabled()) {
 				paintFilled.setColor(draggingMaxXThumb ? THUMB_COLOR_PRESSED : THUMB_COLOR);
@@ -133,20 +133,20 @@ public class MinMaxBar extends View {
 			case MotionEvent.ACTION_DOWN:
 				setPressed(true);
 				attemptMove(event);
-				break;
-				
+			break;
+			
 			case MotionEvent.ACTION_MOVE:
 				getParent().requestDisallowInterceptTouchEvent(true);
 				attemptMove(event);
-				break;
-				
+			break;
+			
 			case MotionEvent.ACTION_UP:
 				setPressed(false);
-				break;
-				
+			break;
+			
 			case MotionEvent.ACTION_CANCEL:
 				setPressed(false);
-				break;
+			break;
 		}
 		return true;
 	}

@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-		android:title="@string/livetextbackground_settings"
-		android:key="livetextbackground_settings"
-    	xmlns:additionalPrefs="http://schemas.android.com/apk/res/steve4448.livetextbackground">
-	<PreferenceScreen android:title="@string/label_settings_category_text">
-		<steve4448.livetextbackground.preference.StringArrayPreference
-				android:key="settings_text"
-				android:title="@string/label_settings_text_label"
-				android:summary="@string/label_settings_text_desc"
-				android:defaultValue="@string/label_settings_text_default" />
-		<steve4448.livetextbackground.preference.MinMaxTextPreviewPreference
-				android:title="@string/label_settings_text_size_variance_label"
-				android:summary="@string/label_settings_text_size_variance_desc"
-				additionalPrefs:minKey="settings_text_size_variance_min"
-				additionalPrefs:maxKey="settings_text_size_variance_max"
-	            additionalPrefs:max="@integer/label_settings_text_size_max"
-	            additionalPrefs:maxDefault="@integer/label_settings_text_size_default_max"
-	            additionalPrefs:min="@integer/label_settings_text_size_min"
-	            additionalPrefs:minDefault="@integer/label_settings_text_size_default_min"
-				additionalPrefs:unitSuffix="px" />
-		<CheckBoxPreference
-				android:key="settings_collision"
-				android:title="@string/label_settings_collision_label"
-				android:summary="@string/label_settings_collision_desc"
-				android:defaultValue="@bool/label_settings_collision_default" />
-		<CheckBoxPreference
-				android:key="settings_shadow_layer"
-				android:title="@string/label_settings_shadow_layer_label"
-				android:summary="@string/label_settings_shadow_layer_desc"
-				android:defaultValue="@bool/label_settings_shadow_layer_default" />
-	</PreferenceScreen>
-	<steve4448.livetextbackground.preference.ColorPickerPreference
-			android:title="@string/label_settings_background_color" />
-	<PreferenceScreen android:title="@string/label_settings_category_advanced">
-		<steve4448.livetextbackground.preference.MinMaxPreference
-				android:key="settings_desired_fps"
-				android:title="@string/label_settings_desired_fps_label"
-				android:summary="@string/label_settings_desired_fps_desc"
-				android:defaultValue="@integer/label_settings_desired_fps_default"
-	            additionalPrefs:max="@integer/label_settings_desired_fps_default_max"
-	            additionalPrefs:min="@integer/label_settings_desired_fps_default_min"
-	            additionalPrefs:minDefault="@integer/label_settings_desired_fps_default"
-				additionalPrefs:unitSuffix=" FPS" />
-	</PreferenceScreen>
+    xmlns:additionalPrefs="http://schemas.android.com/apk/res/steve4448.livetextbackground"
+    android:key="livetextbackground_settings"
+    android:title="@string/livetextbackground_settings" >
+
+    <PreferenceScreen android:title="@string/label_settings_category_text" >
+        <steve4448.livetextbackground.preference.StringArrayPreference
+            android:defaultValue="@string/label_settings_text_default"
+            android:key="settings_text"
+            android:summary="@string/label_settings_text_desc"
+            android:title="@string/label_settings_text_label" />
+
+        <steve4448.livetextbackground.preference.MinMaxTextPreviewPreference
+            additionalPrefs:max="@integer/label_settings_text_size_max"
+            additionalPrefs:maxDefault="@integer/label_settings_text_size_default_max"
+            additionalPrefs:maxKey="settings_text_size_variance_max"
+            additionalPrefs:min="@integer/label_settings_text_size_min"
+            additionalPrefs:minDefault="@integer/label_settings_text_size_default_min"
+            additionalPrefs:minKey="settings_text_size_variance_min"
+            additionalPrefs:unitSuffix="px"
+            android:summary="@string/label_settings_text_size_variance_desc"
+            android:title="@string/label_settings_text_size_variance_label" />
+
+        <CheckBoxPreference
+            android:defaultValue="@bool/label_settings_collision_default"
+            android:key="settings_collision"
+            android:summary="@string/label_settings_collision_desc"
+            android:title="@string/label_settings_collision_label" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/label_settings_shadow_layer_default"
+            android:key="settings_shadow_layer"
+            android:summary="@string/label_settings_shadow_layer_desc"
+            android:title="@string/label_settings_shadow_layer_label" />
+    </PreferenceScreen>
+
+    <steve4448.livetextbackground.preference.ColorPickerPreference android:title="@string/label_settings_background_color" />
+
+    <PreferenceScreen android:title="@string/label_settings_category_advanced" >
+        <steve4448.livetextbackground.preference.MinMaxPreference
+            additionalPrefs:max="@integer/label_settings_desired_fps_default_max"
+            additionalPrefs:min="@integer/label_settings_desired_fps_default_min"
+            additionalPrefs:minDefault="@integer/label_settings_desired_fps_default"
+            additionalPrefs:unitSuffix=" FPS"
+            android:defaultValue="@integer/label_settings_desired_fps_default"
+            android:key="settings_desired_fps"
+            android:summary="@string/label_settings_desired_fps_desc"
+            android:title="@string/label_settings_desired_fps_label" />
+    </PreferenceScreen>
+
 </PreferenceScreen>

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-		<include
-		    android:id="@+id/minMaxLayout"
-		    layout="@layout/minmaxpreference"/>
-		
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/minMaxLayout"
+            layout="@layout/minmaxpreference" />
+
         <TextView
             android:id="@+id/minPreview"
             android:layout_width="wrap_content"

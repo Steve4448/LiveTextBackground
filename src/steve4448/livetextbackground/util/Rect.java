@@ -7,6 +7,7 @@ public class Rect {
 	public int y;
 	public int width;
 	public int height;
+	
 	public Rect() {
 		this(0, 0, 0);
 	}

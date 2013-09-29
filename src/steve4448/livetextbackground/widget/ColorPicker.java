@@ -87,7 +87,7 @@ public class ColorPicker extends View {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		//TODO: Actually measure properly.
+		// TODO: Actually measure properly.
 		this.setMeasuredDimension(hueRect.width + CONTENT_PADDING * 2, hueRect.height + satValRect.height + CONTENT_PADDING * 2 + (LINE_THICKNESS * 2));
 	}
 	
@@ -130,11 +130,11 @@ public class ColorPicker extends View {
 		}
 		return true;
 	}
-
+	
 	public void attemptMove(MotionEvent event) {
 		Point p = new Point((int)event.getX(), (int)event.getY());
-		p.x-=CONTENT_PADDING;
-		p.y-=CONTENT_PADDING;
+		p.x -= CONTENT_PADDING;
+		p.y -= CONTENT_PADDING;
 		if(event.getAction() == MotionEvent.ACTION_DOWN) {
 			draggingSelector = hueRect.intersects(p);
 			draggingSelector2 = satValRect.intersects(p);

@@ -99,7 +99,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
 				textSizeMin = prefs.getInt("settings_text_size_variance_min", getResources().getInteger(R.integer.label_settings_text_size_default_min));
 				textSizeMax = prefs.getInt("settings_text_size_variance_max", getResources().getInteger(R.integer.label_settings_text_size_default_max));
-
+				
 				String[] defaultStrings = getResources().getString(R.string.label_settings_text_default).split("\\|");
 				try {
 					int prefsStrings = prefs.getInt("settings_text", -1);
@@ -139,7 +139,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(!tried) {
 					tried = true;
 					boolean fixed = loadSettings();
-					return (tried = fixed);
+					return(tried = fixed);
 				} else
 					return false;
 			}
@@ -255,7 +255,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		private void draw() {
-			//long startTime = System.currentTimeMillis();
+			// long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = null;
 			try {
@@ -288,7 +288,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null)
 					holder.unlockCanvasAndPost(canvas);
 			}
-			//System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
+			// System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }
