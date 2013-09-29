@@ -17,6 +17,7 @@ public class PreferenceHelper {
 	public static final String PREFERENCE_NAME = "livetextbackground_settings";
 	public static final int PHOTO_PICKER_REQUEST_CODE = 1;
 	private SharedPreferences actualPrefs;
+	private OnSharedPreferenceChangeListener changeListener;
 	private Context context;
 	public int textSizeMin;
 	public int textSizeMax;
@@ -30,13 +31,14 @@ public class PreferenceHelper {
 	public PreferenceHelper(final Context context) {
 		this.context = context;
 		actualPrefs = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-		actualPrefs.registerOnSharedPreferenceChangeListener(new OnSharedPreferenceChangeListener() {
+		changeListener = new OnSharedPreferenceChangeListener() {
 			@Override
 			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 				System.out.println("Key Changed: " + key);
 				loadSettings(key);
 			}
-		});
+		};
+		actualPrefs.registerOnSharedPreferenceChangeListener(changeListener);
 		loadSettings(null);
 	}
 	
