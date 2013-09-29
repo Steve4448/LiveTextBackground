@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_text_size_variance_min">settings_text_size_variance_min</string>
+    <string name="settings_text_size_variance_max">settings_text_size_variance_max</string>
+    <string name="settings_text">settings_text</string>
+    <string name="settings_collision">settings_collision</string>
+    <string name="settings_shadow_layer">settings_shadow_layer</string>
+    <string name="settings_desired_fps">settings_desired_fps</string>
+    <string name="settings_background_image">settings_background_image</string>
+</resources>

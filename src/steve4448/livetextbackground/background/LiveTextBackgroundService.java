@@ -4,12 +4,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import steve4448.livetextbackground.R;
-import steve4448.livetextbackground.activity.PreferencesActivity;
 import steve4448.livetextbackground.background.object.ExplosionParticle;
 import steve4448.livetextbackground.background.object.ExplosionParticleGroup;
 import steve4448.livetextbackground.background.object.TextObject;
-import android.content.SharedPreferences;
+import steve4448.livetextbackground.util.PreferenceHelper;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,24 +15,23 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
 
 public class LiveTextBackgroundService extends WallpaperService {
-	
 	@Override
 	public Engine onCreateEngine() {
 		return new LiveTextBackgroundEngine();
 	}
 	
-	private class LiveTextBackgroundEngine extends Engine {
+	public class LiveTextBackgroundEngine extends Engine {
+		public PreferenceHelper pref;
 		private Paint paintText;
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private CopyOnWriteArrayList<ExplosionParticleGroup> textExplObj = new CopyOnWriteArrayList<ExplosionParticleGroup>();
 		private Timer logicTimer;
 		private TimerTask logicTimerTask;
+		private boolean hasShadow;
 		private final Handler paintHandler = new Handler();
 		private final Runnable paintRunnable = new Runnable() {
 			@Override
@@ -44,15 +41,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 		};
 		private boolean visible = false;
 		
-		private String[] availableStrings;
-		private boolean collisionEnabled;
-		private int desiredFPS;
-		private int textSizeMin, textSizeMax;
-		private boolean tried = false;
-		private boolean hasShadow = false;
-		private boolean applyShadow = false;
-		
-		private LiveTextBackgroundEngine() {
+		public LiveTextBackgroundEngine() {
+			pref = new PreferenceHelper(getBaseContext(), this);
 			paintText = new Paint();
 			paintText.setAntiAlias(true);
 			paintText.setTypeface(Typeface.SANS_SERIF);
@@ -94,66 +84,11 @@ public class LiveTextBackgroundService extends WallpaperService {
 			setupLogicHandler(visible);
 		}
 		
-		private boolean loadSettings() {
-			try {
-				SharedPreferences prefs = getSharedPreferences(PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE);
-				textSizeMin = prefs.getInt("settings_text_size_variance_min", getResources().getInteger(R.integer.label_settings_text_size_default_min));
-				textSizeMax = prefs.getInt("settings_text_size_variance_max", getResources().getInteger(R.integer.label_settings_text_size_default_max));
-				
-				String[] defaultStrings = getResources().getString(R.string.label_settings_text_default).split("\\|");
-				try {
-					int prefsStrings = prefs.getInt("settings_text", -1);
-					if(prefsStrings > 0) {
-						availableStrings = new String[prefsStrings];
-						for(int i = 0; i < availableStrings.length; i++) {
-							availableStrings[i] = prefs.getString("settings_text" + i, null);
-						}
-					} else {
-						throw new Exception("Invalid amount of strings.");
-					}
-				} catch(Exception e) {
-					prefs.edit().putString("settings_text", getResources().getString(R.string.label_settings_text_default)).commit();
-					availableStrings = defaultStrings;
-				}
-				
-				if(availableStrings.length == 0) {
-					throw new Exception("Zero available strings at this point..?");
-				}
-				
-				collisionEnabled = prefs.getBoolean("settings_collision", getResources().getBoolean(R.bool.label_settings_collision_default));
-				applyShadow = prefs.getBoolean("settings_shadow_layer", getResources().getBoolean(R.bool.label_settings_shadow_layer_default));
-				
-				try {
-					desiredFPS = 1000 / prefs.getInt("settings_desired_fps", getResources().getInteger(R.integer.label_settings_desired_fps_default));
-				} catch(Exception e) {
-					e.printStackTrace();
-					Toast.makeText(getBaseContext(), R.string.toast_error_parsing_desired_fps, Toast.LENGTH_LONG).show();
-					prefs.edit().putInt("settings_desired_fps", getResources().getInteger(R.integer.label_settings_desired_fps_default)).commit();
-					desiredFPS = 1000 / getResources().getInteger(R.integer.label_settings_desired_fps_default);
-				}
-				return true;
-			} catch(Exception e) {
-				e.printStackTrace();
-				PreferenceManager.setDefaultValues(getBaseContext(), PreferencesActivity.PREFERENCE_NAME, MODE_PRIVATE, R.xml.livetextbackground_settings, true);
-				Toast.makeText(getBaseContext(), R.string.toast_error_loading_preferences, Toast.LENGTH_LONG).show();
-				if(!tried) {
-					tried = true;
-					boolean fixed = loadSettings();
-					return(tried = fixed);
-				} else
-					return false;
-			}
-		}
-		
-		private void setupLogicHandler(boolean on) {
+		public void setupLogicHandler(boolean on) {
+			System.out.println("Setting up logic handler? " + on);
 			if(on) {
 				if(logicTimer != null)
 					setupLogicHandler(false);
-				
-				if(!loadSettings()) {
-					Toast.makeText(getBaseContext(), R.string.toast_fatal_error_loading_preferences, Toast.LENGTH_LONG).show();
-					return;
-				}
 				
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
@@ -161,7 +96,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 					public void run() {
 						logic();
 					}
-				}, desiredFPS, desiredFPS);
+				}, pref.desiredFPS, pref.desiredFPS);
 				paintHandler.post(paintRunnable);
 			} else {
 				if(logicTimer != null) {
@@ -180,8 +115,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private void logic() {
 			// long startTime = System.currentTimeMillis();
 			if((int)(Math.random() * 10) == 1) {
-				String text = availableStrings[(int)(Math.random() * availableStrings.length)];
-				int size = (int)(textSizeMin + (Math.random() * (textSizeMax - textSizeMin)));
+				String text = pref.availableStrings[(int)(Math.random() * pref.availableStrings.length)];
+				int size = (int)(pref.textSizeMin + (Math.random() * (pref.textSizeMax - pref.textSizeMin)));
 				int col = Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255));
 				Rect bounds = new Rect();
 				paintText.setColor(col);
@@ -210,7 +145,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 					textObj.remove(t);
 					continue;
 				}
-				if(collisionEnabled) {
+				if(pref.collisionEnabled) {
 					for(TextObject t2 : textObj) {
 						if(t2 == t)
 							continue;
@@ -268,7 +203,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 							ExplosionParticle p2 = p.arr[i];
 							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, p.paint);
 						}
-						if(applyShadow)
+						if(pref.applyShadow)
 							p.paint.setShadowLayer(1, 2, 2, Color.argb(Color.alpha(p.color), 0, 0, 0));
 					}
 					for(TextObject t : textObj) {
@@ -276,10 +211,10 @@ public class LiveTextBackgroundService extends WallpaperService {
 							canvas.drawBitmap(t.cachedText, t.dimen.left, t.dimen.top, paintText);
 					}
 					
-					if(!hasShadow && applyShadow) {
+					if(!hasShadow && pref.applyShadow) {
 						paintText.setShadowLayer(1, 2, 2, Color.BLACK);
 						hasShadow = true;
-					} else if(hasShadow && !applyShadow) {
+					} else if(hasShadow && !pref.applyShadow) {
 						paintText.setShadowLayer(0, 0, 0, Color.BLACK);
 						hasShadow = false;
 					}
