@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import steve4448.livetextbackground.R;
 import steve4448.livetextbackground.util.PreferenceHelper;
-import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,11 +35,6 @@ public class PreferencesActivity extends PreferenceActivity {
 					photoPickerIntent.putExtra("crop", "true");
 					photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, getBackgroundUri());
 					photoPickerIntent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
-					photoPickerIntent.putExtra("outputX", WallpaperManager.getInstance(getBaseContext()).getDesiredMinimumWidth());
-					photoPickerIntent.putExtra("outputY", WallpaperManager.getInstance(getBaseContext()).getDesiredMinimumHeight());
-					photoPickerIntent.putExtra("aspectX", 1);
-					photoPickerIntent.putExtra("aspectY", 1);
-					photoPickerIntent.putExtra("scale", true);
 					startActivityForResult(Intent.createChooser(photoPickerIntent, getResources().getString(R.string.label_settins_select_an_image)), PreferenceHelper.PHOTO_PICKER_REQUEST_CODE);
 				} catch(ActivityNotFoundException e) {
 					e.printStackTrace();
