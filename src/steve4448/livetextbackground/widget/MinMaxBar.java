@@ -265,6 +265,11 @@ public class MinMaxBar extends View {
 		return absoluteMaximum;
 	}
 	
+	public void setSingleThumbMode(boolean singleThumbMode) {
+		this.singleThumbMode = singleThumbMode;
+		invalidate();
+	}
+	
 	public boolean isSingleThumbMode() {
 		return singleThumbMode;
 	}

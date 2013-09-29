@@ -11,8 +11,9 @@
     <declare-styleable name="ColorPickerPreference">
         
     </declare-styleable>
-	<declare-styleable name="PixelSizeVariancePreference">
+	<declare-styleable name="MinMaxPreference">
         <attr name="minKey" format="string" />
 		<attr name="maxKey" format="string" />
+		<attr name="unitSuffix" format="string" />
     </declare-styleable>
 </resources>

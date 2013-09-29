@@ -7,56 +7,36 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
-
+		
         <TextView
             android:id="@+id/numMin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/fpsBar"
+            android:layout_alignTop="@+id/minMaxBar"
             android:gravity="center"
             android:text="@string/placeholder_min_max_bar_default_dp"
             android:width="40dp" />
 
         <TextView
-            android:id="@+id/minFPS"
+            android:id="@+id/numMax"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignBottom="@+id/fpsBar"
+            android:layout_alignBottom="@+id/minMaxBar"
             android:gravity="center"
             android:text="@string/placeholder_min_max_bar_default_dp"
             android:width="40dp" />
 
         <steve4448.livetextbackground.widget.MinMaxBar
-            android:id="@+id/fpsBar"
+            android:id="@+id/minMaxBar"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_toLeftOf="@+id/minFPS"
+            android:layout_toLeftOf="@+id/numMax"
             additionalPrefs:max="@integer/label_settings_text_size_max"
             additionalPrefs:maxDefault="@integer/label_settings_text_size_default_max"
             additionalPrefs:min="@integer/label_settings_text_size_min"
             additionalPrefs:minDefault="@integer/label_settings_text_size_default_min" />
-
-        <TextView
-            android:id="@+id/minPreview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/fpsBar"
-            android:gravity="center"
-            android:text="@string/label_settings_text_minimum_preview" />
-
-        <TextView
-            android:id="@+id/maxPreview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/minPreview"
-            android:gravity="center"
-            android:text="@string/label_settings_text_maximum_preview" />
     </RelativeLayout>
 
 </ScrollView>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+		<include
+		    android:id="@+id/minMaxLayout"
+		    layout="@layout/minmaxpreference"/>
+		
+        <TextView
+            android:id="@+id/minPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/minMaxLayout"
+            android:gravity="center"
+            android:text="@string/label_settings_text_minimum_preview" />
+
+        <TextView
+            android:id="@+id/maxPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/minPreview"
+            android:gravity="center"
+            android:text="@string/label_settings_text_maximum_preview" />
+    </RelativeLayout>
+
+</ScrollView>
