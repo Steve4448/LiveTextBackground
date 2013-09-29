@@ -115,8 +115,9 @@ public class PreferenceHelper {
 					actualPrefs.edit().putBoolean(r.getString(R.string.settings_enable_background_image), r.getBoolean(R.bool.label_settings_background_enabled)).commit();
 				}
 			}
-			
 			if((key == null && backgroundImageEnabled) || (key == r.getString(R.string.settings_background_image) && backgroundImageEnabled))
+				if(backgroundImage != null)
+					backgroundImage.recycle();
 				try {
 					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
 					if(uri != null)
