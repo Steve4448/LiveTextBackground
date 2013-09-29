@@ -1,7 +1,6 @@
 package steve4448.livetextbackground.util;
 
 import steve4448.livetextbackground.R;
-import steve4448.livetextbackground.background.LiveTextBackgroundService.LiveTextBackgroundEngine;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -21,7 +20,7 @@ public class PreferenceHelper {
 	public boolean applyShadow;
 	public int desiredFPS;
 	
-	public PreferenceHelper(final Context context, final LiveTextBackgroundEngine eng) {
+	public PreferenceHelper(final Context context) {
 		this.context = context;
 		actualPrefs = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
 		actualPrefs.registerOnSharedPreferenceChangeListener(new OnSharedPreferenceChangeListener() {

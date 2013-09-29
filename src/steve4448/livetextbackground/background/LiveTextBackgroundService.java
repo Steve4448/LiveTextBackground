@@ -24,7 +24,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		return new LiveTextBackgroundEngine();
 	}
 	
-	public class LiveTextBackgroundEngine extends Engine {
+	private class LiveTextBackgroundEngine extends Engine {
 		public PreferenceHelper pref;
 		private Paint paintText;
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
@@ -41,8 +41,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 		};
 		private boolean visible = false;
 		
-		public LiveTextBackgroundEngine() {
-			pref = new PreferenceHelper(getBaseContext(), this);
+		private LiveTextBackgroundEngine() {
+			pref = new PreferenceHelper(getBaseContext());
 			paintText = new Paint();
 			paintText.setAntiAlias(true);
 			paintText.setTypeface(Typeface.SANS_SERIF);
