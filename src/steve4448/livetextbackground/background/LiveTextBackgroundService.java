@@ -28,6 +28,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 		public PreferenceHelper pref;
 		private Paint paintBackground;
 		private Paint paintText;
+		private Paint paintRect;
+		private Paint paintRectShadow;
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private CopyOnWriteArrayList<ExplosionParticleGroup> textExplObj = new CopyOnWriteArrayList<ExplosionParticleGroup>();
 		private Timer logicTimer;
@@ -45,6 +47,13 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private LiveTextBackgroundEngine() {
 			pref = new PreferenceHelper(getBaseContext());
 			paintBackground = new Paint();
+			
+			paintRect = new Paint();
+			paintRect.setStyle(Paint.Style.FILL);
+			
+			paintRectShadow = new Paint();
+			paintRectShadow.setStyle(Paint.Style.FILL);
+
 			paintText = new Paint();
 			paintText.setAntiAlias(true);
 			paintText.setTypeface(Typeface.SANS_SERIF);
@@ -192,7 +201,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		private void draw() {
-			// long startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = null;
 			try {
@@ -202,14 +211,16 @@ public class LiveTextBackgroundService extends WallpaperService {
 					if(pref.backgroundImageEnabled && pref.backgroundImage != null)
 						canvas.drawBitmap(pref.backgroundImage, 0, 0, paintBackground);
 					for(ExplosionParticleGroup p : textExplObj) {
-						p.paint.setColor(p.color);
-						p.paint.setAlpha(p.alpha);
+						paintRect.setColor(p.color);
+						paintRect.setAlpha(p.alpha);
 						for(int i = 0; i < p.arr.length; i++) {
 							ExplosionParticle p2 = p.arr[i];
-							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, p.paint);
+							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, paintRect);
+							if(pref.applyShadow) {
+								paintRectShadow.setColor(Color.argb(p.alpha, 0, 0, 0));
+								canvas.drawRect(p2.x + 2, p2.y + 2, p2.x + 2 + p2.size + 2, p2.y + 2 + p2.size + 2, paintRectShadow);
+							}
 						}
-						if(pref.applyShadow)
-							p.paint.setShadowLayer(1, 2, 2, Color.argb(p.alpha, 0, 0, 0));
 					}
 					for(TextObject t : textObj) {
 						paintText.setColor(t.color);
@@ -232,7 +243,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null)
 					holder.unlockCanvasAndPost(canvas);
 			}
-			// System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
+			System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }
