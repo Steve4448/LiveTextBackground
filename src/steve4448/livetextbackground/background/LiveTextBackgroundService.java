@@ -201,7 +201,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 		}
 		
 		private void draw() {
-			long startTime = System.currentTimeMillis();
+			// long startTime = System.currentTimeMillis();
 			final SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = null;
 			try {
@@ -215,11 +215,11 @@ public class LiveTextBackgroundService extends WallpaperService {
 						paintRect.setAlpha(p.alpha);
 						for(int i = 0; i < p.arr.length; i++) {
 							ExplosionParticle p2 = p.arr[i];
-							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, paintRect);
 							if(pref.applyShadow) {
 								paintRectShadow.setColor(Color.argb(p.alpha, 0, 0, 0));
-								canvas.drawRect(p2.x + 2, p2.y + 2, p2.x + 2 + p2.size + 2, p2.y + 2 + p2.size + 2, paintRectShadow);
+								canvas.drawRect(p2.x + 2, p2.y + 2, p2.x + p2.size + 2, p2.y + p2.size + 2, paintRectShadow);
 							}
+							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, paintRect);
 						}
 					}
 					for(TextObject t : textObj) {
@@ -243,7 +243,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null)
 					holder.unlockCanvasAndPost(canvas);
 			}
-			System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
+			// System.out.println("Finished painting in " + (System.currentTimeMillis() - startTime) + "ms."); //Seems to take about 16-20ms on my device (LGP960).
 		}
 	}
 }
