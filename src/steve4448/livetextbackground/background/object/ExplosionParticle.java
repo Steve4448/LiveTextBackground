@@ -5,9 +5,9 @@ public class ExplosionParticle {
 	public float y;
 	public float velocityX;
 	public float velocityY;
-	public int size;
+	public float size;
 	
-	public ExplosionParticle(float x, float y, int size) {
+	public ExplosionParticle(float x, float y, float size) {
 		this.x = x;
 		this.y = y;
 		velocityX = (float)(Math.random() * 3 - Math.random() * 3);

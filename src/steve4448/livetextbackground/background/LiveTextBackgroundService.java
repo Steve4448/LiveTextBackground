@@ -162,8 +162,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 						if(t2 == t)
 							continue;
 						if(t.dimen.intersect(t2.dimen)) {
-							textExplObj.add(new ExplosionParticleGroup(t.dimen.left, t.dimen.top, t.dimen.width(), t.dimen.height(), t.color));
-							textExplObj.add(new ExplosionParticleGroup(t.dimen.left, t.dimen.top, t.dimen.width(), t.dimen.height(), t2.color));
+							textExplObj.add(new ExplosionParticleGroup(t.dimen.left, t.dimen.top, t.dimen.width(), t.dimen.height(), t.color, t.size / 6));
+							textExplObj.add(new ExplosionParticleGroup(t.dimen.left, t.dimen.top, t.dimen.width(), t.dimen.height(), t2.color, t2.size / 6));
 							t.cachedText.recycle();
 							t2.cachedText.recycle();
 							textObj.remove(t);
@@ -223,7 +223,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 						}
 					}
 					for(TextObject t : textObj) {
-						if(t.cachedText != null) {
+						if(t.cachedText != null && !t.cachedText.isRecycled()) {
 							paintText.setColor(t.color);
 							canvas.drawBitmap(t.cachedText, t.dimen.left, t.dimen.top, paintText);
 						}
