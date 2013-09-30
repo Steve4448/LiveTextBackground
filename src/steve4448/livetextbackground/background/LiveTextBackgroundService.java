@@ -121,11 +121,11 @@ public class LiveTextBackgroundService extends WallpaperService {
 				int size = (int)(pref.textSizeMin + (Math.random() * (pref.textSizeMax - pref.textSizeMin)));
 				int col = Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255));
 				Rect bounds = new Rect();
-				paintText.setColor(col);
 				paintText.setTextSize(size);
 				paintText.getTextBounds(text, 0, text.length(), bounds);
 				float x = (float)(Math.random() * getDesiredMinimumWidth());
-				TextObject newObj = new TextObject(paintText, text, new RectF(x, 0, x + bounds.width(), bounds.height()), size, col);
+				TextObject newObj = new TextObject(text, new RectF(x, 0, x + bounds.width(), bounds.height()), size, col);
+				newObj.doCache(paintText, null);
 				textObj.add(newObj);
 				bounds = null;
 			}
@@ -144,6 +144,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				t.velocityY += 0.01;
 				t.dimen.offset(t.velocityX, t.velocityY);
 				if(t.dimen.top > getDesiredMinimumHeight() || t.dimen.left > getDesiredMinimumWidth() || t.dimen.right < 0) {
+					t.cachedText.recycle();
 					textObj.remove(t);
 					continue;
 				}
@@ -154,6 +155,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 						if(t.dimen.intersect(t2.dimen)) {
 							textExplObj.add(new ExplosionParticleGroup(t.dimen.left, t.dimen.top, t.dimen.width(), t.dimen.height(), t.color));
 							textExplObj.add(new ExplosionParticleGroup(t.dimen.left, t.dimen.top, t.dimen.width(), t.dimen.height(), t2.color));
+							t.cachedText.recycle();
+							t2.cachedText.recycle();
 							textObj.remove(t);
 							textObj.remove(t2);
 							break;
@@ -211,11 +214,12 @@ public class LiveTextBackgroundService extends WallpaperService {
 							p.paint.setShadowLayer(1, 2, 2, Color.argb(Color.alpha(p.color), 0, 0, 0));
 					}
 					for(TextObject t : textObj) {
-						paintText.setColor(Color.argb(15, 0, 0, 0));
-						canvas.drawRect(t.dimen.left, t.dimen.top, t.dimen.right, t.dimen.bottom, paintText);
 						paintText.setColor(t.color);
-						if(t.cachedText != null)
+						if(t.cachedText == null || t.cachedText.isRecycled())
+							t.doCache(paintText, canvas);
+						else if(t.cachedText != null) {
 							canvas.drawBitmap(t.cachedText, t.dimen.left, t.dimen.top, paintText);
+						}
 					}
 					
 					if(!hasShadow && pref.applyShadow) {

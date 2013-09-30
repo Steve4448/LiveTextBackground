@@ -73,9 +73,7 @@ public class PreferencesActivity extends PreferenceActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(resultCode != RESULT_OK) {
-			Toast.makeText(getBaseContext(), R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_LONG).show();
-		} else if(requestCode == PreferenceHelper.PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
+		if(requestCode == PreferenceHelper.PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
 			try {
 				getSharedPreferences(PreferenceHelper.PREFERENCE_NAME, MODE_PRIVATE).edit().putString(getResources().getString(R.string.settings_background_image), /*cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))*/getBackgroundUri().toString()).commit();
 			} catch(Exception e) {

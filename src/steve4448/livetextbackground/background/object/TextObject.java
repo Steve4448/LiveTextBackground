@@ -14,7 +14,7 @@ public class TextObject {
 	public int color;
 	public Bitmap cachedText;
 	
-	public TextObject(Paint paint, String text, RectF dimen, int size, int color) {
+	public TextObject(String text, RectF dimen, int size, int color) {
 		this.text = text;
 		this.dimen = dimen;
 		this.velocityX = (float)((Math.random() * 3) - (Math.random() * 3));
@@ -23,8 +23,20 @@ public class TextObject {
 		this.color = color;
 		if((int)dimen.width() <= 0 || (int)dimen.height() <= 0)
 			return;
-		cachedText = Bitmap.createBitmap((int)dimen.width() + 2, (int)dimen.height() * 2, Bitmap.Config.ARGB_8888);
+	}
+	
+	public void doCache(Paint p, Canvas backup) {
+		int bWidth = (int)dimen.width() + 2;
+		int bHeight = (int)dimen.height() * 2;
+		if(bWidth <= 0 || bHeight <= 0) {
+			System.out.println("TextObject (" + text + ", " + dimen.toString() + ", " + size + ", " + color + ") invalid. (" + bWidth + "x" + bHeight + ")");
+			return;
+		}
+		cachedText = Bitmap.createBitmap(bWidth, bHeight, Bitmap.Config.ARGB_8888);
 		Canvas c2 = new Canvas(cachedText);
-		c2.drawText(text, 0, dimen.height(), paint);
+		p.setTextSize(size);
+		c2.drawText(text, 0, dimen.height(), p);
+		if(backup != null)
+			backup.drawText(text, dimen.left, dimen.top, p);
 	}
 }
