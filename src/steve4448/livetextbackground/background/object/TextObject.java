@@ -34,6 +34,7 @@ public class TextObject {
 		}
 		cachedText = Bitmap.createBitmap(bWidth, bHeight, Bitmap.Config.ARGB_8888);
 		Canvas c2 = new Canvas(cachedText);
+		p.setColor(color);
 		p.setTextSize(size);
 		c2.drawText(text, 0, dimen.height(), p);
 		if(backup != null)

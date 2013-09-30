@@ -223,10 +223,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 						}
 					}
 					for(TextObject t : textObj) {
-						paintText.setColor(t.color);
-						if(t.cachedText == null || t.cachedText.isRecycled())
-							t.doCache(paintText, canvas);
-						else if(t.cachedText != null) {
+						if(t.cachedText != null) {
+							paintText.setColor(t.color);
 							canvas.drawBitmap(t.cachedText, t.dimen.left, t.dimen.top, paintText);
 						}
 					}
