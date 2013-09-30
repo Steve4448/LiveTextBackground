@@ -181,11 +181,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 					p2.x += p2.velocityX;
 					p2.y += p2.velocityY += 0.01;
 				}
-				int leftoverAlpha = Color.alpha(p.color) - (int)(Math.random() * 12);
-				if(leftoverAlpha < 0)
-					leftoverAlpha = 0;
-				p.color = Color.argb(leftoverAlpha, Color.red(p.color), Color.green(p.color), Color.blue(p.color));
-				if(Color.alpha(p.color) <= 0)
+				p.alpha -= (int)(Math.random() * 12);
+				if(p.alpha <= 0)
 					textExplObj.remove(p);
 			}
 			paintHandler.removeCallbacks(paintRunnable);
@@ -206,12 +203,13 @@ public class LiveTextBackgroundService extends WallpaperService {
 						canvas.drawBitmap(pref.backgroundImage, 0, 0, paintBackground);
 					for(ExplosionParticleGroup p : textExplObj) {
 						p.paint.setColor(p.color);
+						p.paint.setAlpha(p.alpha);
 						for(int i = 0; i < p.arr.length; i++) {
 							ExplosionParticle p2 = p.arr[i];
 							canvas.drawRect(p2.x, p2.y, p2.x + p2.size, p2.y + p2.size, p.paint);
 						}
 						if(pref.applyShadow)
-							p.paint.setShadowLayer(1, 2, 2, Color.argb(Color.alpha(p.color), 0, 0, 0));
+							p.paint.setShadowLayer(1, 2, 2, Color.argb(p.alpha, 0, 0, 0));
 					}
 					for(TextObject t : textObj) {
 						paintText.setColor(t.color);
