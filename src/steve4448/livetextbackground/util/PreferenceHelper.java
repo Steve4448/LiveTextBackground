@@ -32,6 +32,7 @@ public class PreferenceHelper {
 	public PreferenceHelper(final Context context) {
 		this.context = context;
 		actualPrefs = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+		loadSettings(null);
 		changeListener = new OnSharedPreferenceChangeListener() {
 			@Override
 			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -40,7 +41,6 @@ public class PreferenceHelper {
 			}
 		};
 		actualPrefs.registerOnSharedPreferenceChangeListener(changeListener);
-		loadSettings(null);
 	}
 	
 	public boolean loadSettings(String key) {
