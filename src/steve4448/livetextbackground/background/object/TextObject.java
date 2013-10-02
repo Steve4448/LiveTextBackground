@@ -17,17 +17,17 @@ public class TextObject {
 	public TextObject(String text, RectF dimen, int size, int color) {
 		this.text = text;
 		this.dimen = dimen;
-		this.velocityX = (float)((Math.random() * 3) - (Math.random() * 3));
-		this.velocityY = (float)(Math.random() * 6);
+		this.velocityX = (float) ((Math.random() * 3) - (Math.random() * 3));
+		this.velocityY = (float) (Math.random() * 6);
 		this.size = size;
 		this.color = color;
-		if((int)dimen.width() <= 0 || (int)dimen.height() <= 0)
+		if((int) dimen.width() <= 0 || (int) dimen.height() <= 0)
 			return;
 	}
 	
 	public void doCache(Paint p, Canvas backup) {
-		int bWidth = (int)dimen.width() + 2;
-		int bHeight = (int)dimen.height() * 2;
+		int bWidth = (int) dimen.width() + 2;
+		int bHeight = (int) dimen.height() * 2;
 		if(bWidth <= 0 || bHeight <= 0) {
 			System.out.println("TextObject (" + text + ", " + dimen.toString() + ", " + size + ", " + color + ") invalid. (" + bWidth + "x" + bHeight + ")");
 			return;

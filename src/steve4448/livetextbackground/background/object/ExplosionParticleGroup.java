@@ -8,9 +8,9 @@ public class ExplosionParticleGroup {
 	public int alpha;
 	
 	public ExplosionParticleGroup(float x, float y, float width, float height, int color, float size) {
-		arr = new ExplosionParticle[(int)Math.min((width * height) + 1, 30)];
+		arr = new ExplosionParticle[(int) Math.min((width * height) + 1, 30)];
 		for(int i = 0; i < arr.length; i++)
-			arr[i] = new ExplosionParticle(x + (float)(Math.random() * width), y + (float)(Math.random() * height), size);
+			arr[i] = new ExplosionParticle(x + (float) (Math.random() * width), y + (float) (Math.random() * height), size);
 		this.color = color;
 		this.alpha = Color.alpha(color);
 	}

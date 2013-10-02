@@ -6,10 +6,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -34,10 +35,10 @@ public class StringArrayPreference extends DialogPreference {
 		} else {
 			String d = null;
 			try {
-				d = getSharedPreferences().getString(getKey(), (String)defaultValue);
+				d = getSharedPreferences().getString(getKey(), (String) defaultValue);
 			} catch(Exception e) {}
 			
-			saveEntries((d != null ? d : (String)defaultValue).split("\\|"));
+			saveEntries((d != null ? d : (String) defaultValue).split("\\|"));
 		}
 	}
 	
@@ -48,10 +49,10 @@ public class StringArrayPreference extends DialogPreference {
 	
 	@Override
 	public void onBindDialogView(final View view) {
-		scrollView = (ScrollView)view.findViewById(R.id.scrollView);
-		alterableLayout = (LinearLayout)view.findViewById(R.id.mainLayout);
+		scrollView = (ScrollView) view.findViewById(R.id.scrollView);
+		alterableLayout = (LinearLayout) view.findViewById(R.id.mainLayout);
 		
-		addNewEntryButton = (Button)view.findViewById(R.id.newEntryButton);
+		addNewEntryButton = (Button) view.findViewById(R.id.newEntryButton);
 		addNewEntryButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -79,7 +80,7 @@ public class StringArrayPreference extends DialogPreference {
 		RelativeLayout wrapper = new RelativeLayout(getContext());
 		final EditText newTextEdit = new EditText(getContext());
 		newTextEdit.setId(ViewHelper.findUnusedId(wrapper));
-		newTextEdit.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
+		newTextEdit.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 		newTextEdit.post(new Runnable() {
 			@Override
 			public void run() {
@@ -92,11 +93,11 @@ public class StringArrayPreference extends DialogPreference {
 		newButton.setId(ViewHelper.findUnusedId(wrapper));
 		newButton.setText(R.string.label_settings_text_array_entry_remove);
 		
-		RelativeLayout.LayoutParams textEditLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams textEditLayout = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		textEditLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		textEditLayout.addRule(RelativeLayout.LEFT_OF, newButton.getId());
 		
-		RelativeLayout.LayoutParams buttonViewLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams buttonViewLayout = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_TOP, newTextEdit.getId());
 		buttonViewLayout.addRule(RelativeLayout.ALIGN_BOTTOM, newTextEdit.getId());
@@ -107,14 +108,14 @@ public class StringArrayPreference extends DialogPreference {
 		wrapper.addView(newTextEdit);
 		wrapper.addView(newButton);
 		
-		alterableLayout.addView(wrapper, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		alterableLayout.addView(wrapper, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
 		addNewEntryButton.bringToFront();
 		
 		newButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				alterableLayout.removeView((View)v.getParent());
+				alterableLayout.removeView((View) v.getParent());
 				attemptEnableFirst(false);
 			}
 		});
@@ -126,7 +127,7 @@ public class StringArrayPreference extends DialogPreference {
 		if(positiveResult && hasKey()) {
 			String[] s = new String[alterableLayout.getChildCount() - 1];
 			for(int i = 0; i < s.length; i++) {
-				s[i] = ((EditText)((RelativeLayout)alterableLayout.getChildAt(i)).getChildAt(0)).getText().toString();
+				s[i] = ((EditText) ((RelativeLayout) alterableLayout.getChildAt(i)).getChildAt(0)).getText().toString();
 			}
 			saveEntries(s);
 		}
@@ -174,7 +175,7 @@ public class StringArrayPreference extends DialogPreference {
 	
 	public void attemptEnableFirst(boolean enable) {
 		if(enable ? alterableLayout.getChildCount() > 2 : alterableLayout.getChildCount() == 2) {
-			Button b = ((Button)((RelativeLayout)alterableLayout.getChildAt(0)).getChildAt(1));
+			Button b = ((Button) ((RelativeLayout) alterableLayout.getChildAt(0)).getChildAt(1));
 			b.setEnabled(enable);
 		}
 	}

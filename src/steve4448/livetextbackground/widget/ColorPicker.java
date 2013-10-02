@@ -132,7 +132,7 @@ public class ColorPicker extends View {
 	}
 	
 	public void attemptMove(MotionEvent event) {
-		Point p = new Point((int)event.getX(), (int)event.getY());
+		Point p = new Point((int) event.getX(), (int) event.getY());
 		p.x -= CONTENT_PADDING;
 		p.y -= CONTENT_PADDING;
 		if(event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -165,6 +165,7 @@ public class ColorPicker extends View {
 			invalidate();
 	}
 	
+	@Override
 	public void setPressed(boolean isPressed) {
 		draggingSelector = false;
 	}

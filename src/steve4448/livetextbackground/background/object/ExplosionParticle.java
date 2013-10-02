@@ -10,8 +10,8 @@ public class ExplosionParticle {
 	public ExplosionParticle(float x, float y, float size) {
 		this.x = x;
 		this.y = y;
-		velocityX = (float)(Math.random() * 3 - Math.random() * 3);
-		velocityY = (float)(Math.random() * 3 - Math.random() * 3);
+		velocityX = (float) (Math.random() * 3 - Math.random() * 3);
+		velocityY = (float) (Math.random() * 3 - Math.random() * 3);
 		this.size = size;
 	}
 }

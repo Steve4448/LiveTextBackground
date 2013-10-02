@@ -53,7 +53,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 			
 			paintRectShadow = new Paint();
 			paintRectShadow.setStyle(Paint.Style.FILL);
-
+			
 			paintText = new Paint();
 			paintText.setAntiAlias(true);
 			paintText.setTypeface(Typeface.SANS_SERIF);
@@ -125,14 +125,14 @@ public class LiveTextBackgroundService extends WallpaperService {
 		
 		private void logic() {
 			// long startTime = System.currentTimeMillis();
-			if((int)(Math.random() * 10) == 1) {
-				String text = pref.availableStrings[(int)(Math.random() * pref.availableStrings.length)];
-				int size = (int)(pref.textSizeMin + (Math.random() * (pref.textSizeMax - pref.textSizeMin)));
-				int col = Color.argb(155 + (int)(Math.random() * 100), (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255));
+			if((int) (Math.random() * 10) == 1) {
+				String text = pref.availableStrings[(int) (Math.random() * pref.availableStrings.length)];
+				int size = (int) (pref.textSizeMin + (Math.random() * (pref.textSizeMax - pref.textSizeMin)));
+				int col = Color.argb(155 + (int) (Math.random() * 100), (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
 				Rect bounds = new Rect();
 				paintText.setTextSize(size);
 				paintText.getTextBounds(text, 0, text.length(), bounds);
-				float x = (float)(Math.random() * getDesiredMinimumWidth());
+				float x = (float) (Math.random() * getDesiredMinimumWidth());
 				TextObject newObj = new TextObject(text, new RectF(x, 0, x + bounds.width(), bounds.height()), size, col);
 				newObj.doCache(paintText, null);
 				textObj.add(newObj);
@@ -190,7 +190,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 					p2.x += p2.velocityX;
 					p2.y += p2.velocityY += 0.01;
 				}
-				p.alpha -= (int)(Math.random() * 12);
+				p.alpha -= (int) (Math.random() * 12);
 				if(p.alpha <= 0)
 					textExplObj.remove(p);
 			}

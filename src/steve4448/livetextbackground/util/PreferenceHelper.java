@@ -83,7 +83,6 @@ public class PreferenceHelper {
 				}
 			}
 			
-			
 			if(key == null || key == r.getString(R.string.settings_collision))
 				try {
 					collisionEnabled = actualPrefs.getBoolean(r.getString(R.string.settings_collision), r.getBoolean(R.bool.label_settings_collision_default));
@@ -91,7 +90,7 @@ public class PreferenceHelper {
 					collisionEnabled = r.getBoolean(R.bool.label_settings_collision_default);
 					actualPrefs.edit().putBoolean(r.getString(R.string.settings_collision), r.getBoolean(R.bool.label_settings_collision_default)).commit();
 				}
-
+			
 			if(key == null || key == r.getString(R.string.settings_shadow_layer))
 				try {
 					applyShadow = actualPrefs.getBoolean(r.getString(R.string.settings_shadow_layer), r.getBoolean(R.bool.label_settings_shadow_layer_default));
@@ -119,15 +118,15 @@ public class PreferenceHelper {
 			if((key == null && backgroundImageEnabled) || (key == r.getString(R.string.settings_background_image) && backgroundImageEnabled))
 				if(backgroundImage != null)
 					backgroundImage.recycle();
-				try {
-					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
-					if(uri != null)
-						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
-				} catch(Exception e) {
-					e.printStackTrace();
-					backgroundImage = null;
-					Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
-				}
+			try {
+				String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
+				if(uri != null)
+					backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
+			} catch(Exception e) {
+				e.printStackTrace();
+				backgroundImage = null;
+				Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
+			}
 			return true;
 		} catch(Exception e) {
 			e.printStackTrace();

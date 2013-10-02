@@ -18,11 +18,11 @@ public class MinMaxTextPreviewPreference extends MinMaxPreference {
 	@Override
 	public void onBindDialogView(View view) {
 		super.onBindDialogView(view);
-		final TextView minTextView = (TextView)view.findViewById(R.id.numMin);
-		final TextView maxTextView = (TextView)view.findViewById(R.id.numMax);
-		final TextView minPreviewTextView = (TextView)view.findViewById(R.id.minPreview);
-		final TextView maxPreviewTextView = (TextView)view.findViewById(R.id.maxPreview);
-		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.minMaxBar);
+		final TextView minTextView = (TextView) view.findViewById(R.id.numMin);
+		final TextView maxTextView = (TextView) view.findViewById(R.id.numMax);
+		final TextView minPreviewTextView = (TextView) view.findViewById(R.id.minPreview);
+		final TextView maxPreviewTextView = (TextView) view.findViewById(R.id.maxPreview);
+		final MinMaxBar minMaxBar = (MinMaxBar) view.findViewById(R.id.minMaxBar);
 		final OnMinMaxBarChangeListener minMaxBarChangeListener = new OnMinMaxBarChangeListener() {
 			@Override
 			public void onMinValueChanged(int newMin, boolean userCall) {
@@ -42,7 +42,7 @@ public class MinMaxTextPreviewPreference extends MinMaxPreference {
 		minPreviewTextView.setTextSize(minMaxBar.getMinimum());
 		maxPreviewTextView.setTextSize(minMaxBar.getMaximum());
 		float tmpScreenDenisty = getContext().getResources().getDisplayMetrics().density;
-		minPreviewTextView.setHeight((int)(tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));
-		maxPreviewTextView.setHeight((int)(tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));
+		minPreviewTextView.setHeight((int) (tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));
+		maxPreviewTextView.setHeight((int) (tmpScreenDenisty * minMaxBar.getAbsoluteMaximum() + minMaxBar.getAbsoluteMaximum() * 0.2));
 	}
 }

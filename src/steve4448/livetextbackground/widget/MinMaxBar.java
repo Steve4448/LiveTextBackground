@@ -74,7 +74,7 @@ public class MinMaxBar extends View {
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		barRect = new RectF(maxCircleRadius, h / 2 - h / 6, w - maxCircleRadius, h / 2 + h / 6);
-		maxCircleRadius = (float)(h / 3);
+		maxCircleRadius = h / 3;
 		thumbMinPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 		thumbMaxPoint = new PointF(barRect.left, barRect.top + barRect.height() / 2);
 	}
@@ -177,7 +177,7 @@ public class MinMaxBar extends View {
 			
 			actualMinimum = absoluteMinimum + ((newLocationMinXThumb - barRect.left) / (barRect.right - barRect.left)) * (absoluteMaximum - absoluteMinimum);
 			if(onMinMaxBarChangeListener != null)
-				onMinMaxBarChangeListener.onMinValueChanged((int)actualMinimum, true);
+				onMinMaxBarChangeListener.onMinValueChanged((int) actualMinimum, true);
 		} else if(draggingMaxXThumb || (locPoint != null && steve4448.livetextbackground.util.RectF.intersects(locPoint, thumbMaxXRect) && !singleThumbMode)) {
 			draggingMinXThumb = false;
 			draggingMaxXThumb = true;
@@ -195,7 +195,7 @@ public class MinMaxBar extends View {
 			}
 			actualMaximum = absoluteMinimum + ((newLocationMaxXThumb - barRect.left) / (barRect.right - barRect.left)) * (absoluteMaximum - absoluteMinimum);
 			if(onMinMaxBarChangeListener != null)
-				onMinMaxBarChangeListener.onMaxValueChanged((int)actualMaximum, true);
+				onMinMaxBarChangeListener.onMaxValueChanged((int) actualMaximum, true);
 		}
 		invalidate();
 	}
@@ -231,7 +231,7 @@ public class MinMaxBar extends View {
 		else if(actualMinimum > absoluteMaximum)
 			actualMinimum = absoluteMaximum;
 		if(onMinMaxBarChangeListener != null)
-			onMinMaxBarChangeListener.onMinValueChanged((int)actualMinimum, false);
+			onMinMaxBarChangeListener.onMinValueChanged((int) actualMinimum, false);
 		invalidate();
 	}
 	
@@ -250,7 +250,7 @@ public class MinMaxBar extends View {
 		else if(actualMaximum > absoluteMaximum)
 			actualMaximum = absoluteMaximum;
 		if(onMinMaxBarChangeListener != null)
-			onMinMaxBarChangeListener.onMaxValueChanged((int)actualMaximum, false);
+			onMinMaxBarChangeListener.onMaxValueChanged((int) actualMaximum, false);
 		invalidate();
 	}
 	

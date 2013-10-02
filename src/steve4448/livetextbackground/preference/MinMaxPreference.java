@@ -37,9 +37,9 @@ public class MinMaxPreference extends DialogPreference {
 	@Override
 	public void onBindDialogView(View view) {
 		super.onBindDialogView(view);
-		final TextView minTextView = (TextView)view.findViewById(R.id.numMin);
-		final TextView maxTextView = (TextView)view.findViewById(R.id.numMax);
-		final MinMaxBar minMaxBar = (MinMaxBar)view.findViewById(R.id.minMaxBar);
+		final TextView minTextView = (TextView) view.findViewById(R.id.numMin);
+		final TextView maxTextView = (TextView) view.findViewById(R.id.numMax);
+		final MinMaxBar minMaxBar = (MinMaxBar) view.findViewById(R.id.minMaxBar);
 		if(hasKey()) {
 			min = getPersistedInt(min);
 		}
