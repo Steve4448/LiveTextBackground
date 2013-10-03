@@ -16,8 +16,8 @@ public class PreferenceHelper {
 	public static final String BACKGROUND_FILE = "The Background.png";
 	public static final String PREFERENCE_NAME = "livetextbackground_settings";
 	public static final int PHOTO_PICKER_REQUEST_CODE = 1;
-	private SharedPreferences actualPrefs;
-	private OnSharedPreferenceChangeListener changeListener;
+	private static SharedPreferences actualPrefs;
+	private static OnSharedPreferenceChangeListener changeListener;
 	private Context context;
 	public int textSizeMin;
 	public int textSizeMax;
@@ -31,15 +31,21 @@ public class PreferenceHelper {
 	
 	public PreferenceHelper(final Context context) {
 		this.context = context;
-		actualPrefs = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+		if(actualPrefs != null) {
+			actualPrefs.unregisterOnSharedPreferenceChangeListener(changeListener);
+		} else {
+			actualPrefs = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+			changeListener = new OnSharedPreferenceChangeListener() {
+				@Override
+				public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+					actualPrefs.unregisterOnSharedPreferenceChangeListener(this);
+					System.out.println("Key Changed: " + key);
+					loadSettings(key);
+					actualPrefs.registerOnSharedPreferenceChangeListener(this);
+				}
+			};
+		}
 		loadSettings(null);
-		changeListener = new OnSharedPreferenceChangeListener() {
-			@Override
-			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-				System.out.println("Key Changed: " + key);
-				loadSettings(key);
-			}
-		};
 		actualPrefs.registerOnSharedPreferenceChangeListener(changeListener);
 	}
 	
@@ -115,17 +121,18 @@ public class PreferenceHelper {
 					actualPrefs.edit().putBoolean(r.getString(R.string.settings_enable_background_image), r.getBoolean(R.bool.label_settings_background_enabled)).commit();
 				}
 			}
-			if((key == null && backgroundImageEnabled) || (key == r.getString(R.string.settings_background_image) && backgroundImageEnabled))
+			if((key == null && backgroundImageEnabled) || (key == r.getString(R.string.settings_background_image) && backgroundImageEnabled)) {
 				if(backgroundImage != null)
 					backgroundImage.recycle();
-			try {
-				String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
-				if(uri != null)
-					backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
-			} catch(Exception e) {
-				e.printStackTrace();
-				backgroundImage = null;
-				Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
+				try {
+					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
+					if(uri != null)
+						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
+				} catch(Exception e) {
+					e.printStackTrace();
+					backgroundImage = null;
+					Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
+				}
 			}
 			return true;
 		} catch(Exception e) {

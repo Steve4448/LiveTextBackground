@@ -25,7 +25,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 	}
 	
 	private class LiveTextBackgroundEngine extends Engine {
-		public PreferenceHelper pref;
+		private PreferenceHelper pref;
 		private Paint paintBackground;
 		private Paint paintText;
 		private Paint paintRect;
