@@ -52,4 +52,6 @@
     
     <string name="placeholder_min_max_bar_default_fps">0 FPS</string>
     <string name="placeholder_min_max_bar_default_dp">0px</string>
+    
+    <string name="placeholder_not_yet_implemented">Not yet finished/implemented.\nPut off indefinitely#8230;</string>
 </resources>
