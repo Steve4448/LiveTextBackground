@@ -18,7 +18,7 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 public class PreferencesActivity extends PreferenceActivity {
-	private File backgroundFile;
+	private static File backgroundFile;
 	
 	@SuppressWarnings("deprecation")
 	@Override
@@ -45,11 +45,11 @@ public class PreferencesActivity extends PreferenceActivity {
 		});
 	}
 	
-	private Uri getBackgroundUri() {
+	private static Uri getBackgroundUri() {
 		return Uri.fromFile(getBackgroundFile());
 	}
 	
-	private File getBackgroundFile() {
+	private static File getBackgroundFile() {
 		if(backgroundFile == null) {
 			try {
 				if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
