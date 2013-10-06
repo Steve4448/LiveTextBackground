@@ -33,26 +33,29 @@
             android:summary="@string/label_settings_shadow_layer_desc"
             android:title="@string/label_settings_shadow_layer_label" />
     </PreferenceScreen>
-
-    <steve4448.livetextbackground.preference.ColorPickerPreference
-        android:title="@string/label_settings_background_color" />
-
-    <Preference
-        android:key="@string/settings_background_image"
-        android:summary="@string/label_settings_background_image_desc"
-        android:title="@string/label_settings_background_image_label" />
     
-        <!-- android:entries="Center, Fill, Fit, Strech, Tile, Center TBD"
-        android:entryValues="Center, Fill, Fit, Strech, Tile, Center TBD" -->
-    <steve4448.livetextbackground.preference.ImageModePreviewPreference
-        android:key="@string/settings_background_mode"
-        android:summary="@string/label_settings_background_image_mode_desc"
-        android:title="@string/label_settings_background_image_mode_label" />
-    
-    <CheckBoxPreference
-        android:defaultValue="@bool/label_settings_background_enabled"
-        android:key="@string/settings_enable_background_image"
-        android:title="@string/label_settins_use_background_image_label" />
+	<PreferenceScreen android:title="@string/label_settings_category_background" >
+	    <steve4448.livetextbackground.preference.ColorPickerPreference
+	        android:title="@string/label_settings_background_color" />
+	
+	    <Preference
+	        android:key="@string/settings_background_image"
+	        android:summary="@string/label_settings_background_image_desc"
+	        android:title="@string/label_settings_background_image_label" />
+	    
+	        <!-- android:entries="Center, Fill, Fit, Strech, Tile, Center TBD"
+	        android:entryValues="Center, Fill, Fit, Strech, Tile, Center TBD" -->
+	    <steve4448.livetextbackground.preference.ImageModePreviewPreference
+	        android:key="@string/settings_background_mode"
+	        android:summary="@string/label_settings_background_image_mode_desc"
+	        android:title="@string/label_settings_background_image_mode_label" />
+	    
+	    <CheckBoxPreference
+	        android:defaultValue="@bool/label_settings_background_enabled"
+	        android:key="@string/settings_enable_background_image"
+	        android:title="@string/label_settins_use_background_image_label"
+	        android:summary="@string/label_settins_use_background_image_desc" />
+    </PreferenceScreen>
     
     <PreferenceScreen android:title="@string/label_settings_category_advanced" >
         <steve4448.livetextbackground.preference.MinMaxPreference

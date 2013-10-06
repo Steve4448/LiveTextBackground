@@ -4,7 +4,7 @@
     <string name="app_desc">Allows a live text background with customizable features like collision, etc.</string>
     <string name="livetextbackground_settings">Live Text Background Settings</string>
     
-    <string name="label_settings_category_text">Text Options</string>
+    <string name="label_settings_category_text">Text</string>
     
     <string name="label_settings_text_label">Displayed Text</string>
     <string name="label_settings_text_desc">The entries of text to be used to display on the background.</string>
@@ -25,16 +25,18 @@
     <string name="label_settings_shadow_layer_desc">Casts a shadow on the text and particles.</string>
     <bool name="label_settings_shadow_layer_default">true</bool>
     
-    <string name="label_settings_background_color">Background Color</string>
-    <string name="label_settings_background_image_label">Background Image</string>
-    <string name="label_settings_background_image_desc">Allows you to choose a background.</string>
+    <string name="label_settings_category_background">Background</string>
+    <string name="label_settings_background_color">Color</string>
+    <string name="label_settings_background_image_label">Image</string>
+    <string name="label_settings_background_image_desc">Allows you to choose an image.</string>
     <string name="label_settins_select_an_image">Select an Image</string>
-    <string name="label_settins_use_background_image_label">Use Background Image</string>
+    <string name="label_settins_use_background_image_label">Use Image</string>
+    <string name="label_settins_use_background_image_desc">If enabled, it\'ll use the desired image, otherwise it\'ll use the color desired.</string>
     <bool name="label_settings_background_enabled">false</bool>
     <string name="label_settings_background_image_mode_label">Background Mode</string>
     <string name="label_settings_background_image_mode_desc">Pick how you would like the background to be displayed, positioning/scaling.</string>
     
-    <string name="label_settings_category_advanced">Advanced Settings</string>
+    <string name="label_settings_category_advanced">Advanced</string>
     <string name="label_settings_desired_fps_label">FPS</string>
     <string name="label_settings_desired_fps_desc">The desired frames per second.</string>
     <integer name="label_settings_desired_fps_default_min">1</integer>
