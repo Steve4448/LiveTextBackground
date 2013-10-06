@@ -7,5 +7,6 @@
     <string name="settings_shadow_layer">settings_shadow_layer</string>
     <string name="settings_desired_fps">settings_desired_fps</string>
     <string name="settings_background_image">settings_background_image</string>
+    <string name="settings_background_mode">settings_background_mode</string>
     <string name="settings_enable_background_image">settings_enable_background_image</string>
 </resources>
