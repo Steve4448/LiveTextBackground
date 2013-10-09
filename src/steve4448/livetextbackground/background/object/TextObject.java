@@ -26,7 +26,7 @@ public class TextObject {
 	}
 	
 	public void doCache(Paint p, Canvas backup) {
-		int bWidth = (int) dimen.width() + 2;
+		int bWidth = (int) dimen.width() + 8;
 		int bHeight = (int) dimen.height() * 2;
 		if(bWidth <= 0 || bHeight <= 0) {
 			System.out.println("TextObject (" + text + ", " + dimen.toString() + ", " + size + ", " + color + ") invalid. (" + bWidth + "x" + bHeight + ")");

@@ -10,9 +10,18 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class ImageModePreview extends View {
+	public static enum ImageMode {
+		CENTER,
+		FILL,
+		FIT,
+		STRECH,
+		TILE
+	};
+	
 	private String imageLocation;
 	private Bitmap image;
 	private Paint painter;
+	private ImageMode currentMode;
 	
 	public ImageModePreview(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -26,6 +35,7 @@ public class ImageModePreview extends View {
 	
 	public void init(Context context, AttributeSet attrs, int defStyle) {
 		painter = new Paint();
+		currentMode = ImageMode.CENTER;
 	}
 	
 	public void setImageLocation(String imageLocation) {
@@ -42,12 +52,34 @@ public class ImageModePreview extends View {
 		return imageLocation;
 	}
 	
+	public void setImageMode(ImageMode mode) {
+		currentMode = mode;
+		invalidate();
+	}
+	
+	public ImageMode getImageMode() {
+		return currentMode;
+	}
+	
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		if(image == null)
-				;//Todo: Draw an image of which indicates the image failed to load?
-		else
+				;//TODO: Draw an image of which indicates the image failed to load?
+		else {
+			switch(currentMode) {
+				case CENTER:
+					break;
+				case FILL:
+					break;
+				case FIT:
+					break;
+				case STRECH:
+					break;
+				case TILE:
+					break;
+			}
 			canvas.drawBitmap(image, 0, 0, painter);
+		}
 	}
 }
