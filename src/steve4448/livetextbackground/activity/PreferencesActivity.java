@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import steve4448.livetextbackground.R;
+import steve4448.livetextbackground.preference.ImageModePreviewPreference;
 import steve4448.livetextbackground.util.PreferenceHelper;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 public class PreferencesActivity extends PreferenceActivity {
 	private static File backgroundFile;
+	private static ImageModePreviewPreference imageModePreviewPreference;
 	
 	@SuppressWarnings("deprecation")
 	@Override
@@ -26,6 +28,8 @@ public class PreferencesActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		getPreferenceManager().setSharedPreferencesName(PreferenceHelper.PREFERENCE_NAME);
 		addPreferencesFromResource(R.xml.livetextbackground_settings);
+		imageModePreviewPreference = (ImageModePreviewPreference) getPreferenceManager().findPreference(getResources().getString(R.string.settings_background_mode));
+		imageModePreviewPreference.imageLocation = getSharedPreferences(PreferenceHelper.PREFERENCE_NAME, MODE_PRIVATE).getString(getResources().getString(R.string.settings_background_image), null);
 		getPreferenceManager().findPreference(getResources().getString(R.string.settings_background_image)).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
@@ -75,6 +79,7 @@ public class PreferencesActivity extends PreferenceActivity {
 		if(requestCode == PreferenceHelper.PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
 			try {
 				getSharedPreferences(PreferenceHelper.PREFERENCE_NAME, MODE_PRIVATE).edit().putString(getResources().getString(R.string.settings_background_image), /* cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)) */getBackgroundUri().toString()).commit();
+				imageModePreviewPreference.imageLocation = getBackgroundUri().toString();
 			} catch(Exception e) {
 				e.printStackTrace();
 				Toast.makeText(getBaseContext(), R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_LONG).show();

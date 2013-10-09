@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class ImageModePreview extends View {
+	private String imageLocation;
+	
 	public ImageModePreview(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context, attrs, 0);
@@ -17,5 +19,13 @@ public class ImageModePreview extends View {
 	
 	public void init(Context context, AttributeSet attrs, int defStyle) {
 		
+	}
+	
+	public void setImageLocation(String imageLocation) {
+		this.imageLocation = imageLocation;
+	}
+	
+	public String getImageLocation() {
+		return imageLocation;
 	}
 }
