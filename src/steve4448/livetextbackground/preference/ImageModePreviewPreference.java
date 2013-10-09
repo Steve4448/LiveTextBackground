@@ -35,19 +35,7 @@ public class ImageModePreviewPreference extends DialogPreference {
 		modeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				if(modeSpinner.getSelectedItem().equals("Center")) {
-					iMP.setImageMode(ImageModePreview.ImageMode.CENTER);
-				} else if(modeSpinner.getSelectedItem().equals("Fill")) {
-					iMP.setImageMode(ImageModePreview.ImageMode.FILL);
-				} else if(modeSpinner.getSelectedItem().equals("Fit")) {
-					iMP.setImageMode(ImageModePreview.ImageMode.FIT);
-				} else if(modeSpinner.getSelectedItem().equals("Strech")) {
-					iMP.setImageMode(ImageModePreview.ImageMode.STRECH);
-				} else if(modeSpinner.getSelectedItem().equals("Tile")) {
-					iMP.setImageMode(ImageModePreview.ImageMode.TILE);
-				} else {
-					System.out.println("Selected unhandled mode: " + modeSpinner.getSelectedItem().toString() + ".");
-				}
+				iMP.setImageMode(modeSpinner.getSelectedItem().toString());
             }
 
 			@Override
