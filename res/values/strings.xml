@@ -35,6 +35,7 @@
     <bool name="label_settings_background_enabled">false</bool>
     <string name="label_settings_background_image_mode_label">Background Mode</string>
     <string name="label_settings_background_image_mode_desc">Pick how you would like the background to be displayed, positioning/scaling.</string>
+    <string name="label_settings_background_image_mode_preview_label">Background Mode Preview:</string>
     
     <string name="label_settings_category_advanced">Advanced</string>
     <string name="label_settings_desired_fps_label">FPS</string>
