@@ -43,6 +43,12 @@ public class ImageModePreview extends View {
 		currentMode = ImageMode.CENTER;
 	}
 	
+	@Override
+	public void onSizeChanged(int w, int h, int oldw, int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		setImageMode(currentMode);
+	}
+	
 	public void setImageLocation(String imageLocation) {
 		this.imageLocation = imageLocation;
 		try {
@@ -63,15 +69,19 @@ public class ImageModePreview extends View {
 	}
 	
 	public void setImageMode(ImageMode mode) {
+		dstRect.set(0, 0, getWidth(), getHeight());
 		currentMode = mode;
 		//TODO: 
 		switch(currentMode) {
 			case CENTER:
-				srcRect.offsetTo(image.getWidth() / 2, image.getHeight() / 2);
+				srcRect.set(0, 0, image.getWidth(), image.getHeight());
+				dstRect.set(dstRect.width() / 2 - image.getWidth() / 2, dstRect.height() / 2 - image.getHeight() / 2, dstRect.width() / 2 + image.getWidth() / 2, dstRect.height() / 2 + image.getHeight() / 2);
 			break;
 			case FILL:
+				srcRect.set(0, 0, image.getWidth(), image.getHeight() - dstRect.height());
 			break;
 			case FIT:
+				srcRect.set(0, 0, image.getWidth() - dstRect.width(), image.getHeight());
 			break;
 			case STRECH:
 				srcRect.set(0, 0, image.getWidth(), image.getHeight());
@@ -89,7 +99,6 @@ public class ImageModePreview extends View {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		dstRect.set(0, 0, getWidth(), getHeight());
 		if(image == null)
 				;//TODO: Draw an image of which indicates the image failed to load?
 		else {
