@@ -10,7 +10,7 @@
 	    <steve4448.livetextbackground.widget.ImageModePreview
 	        android:id="@+id/imageModePreview"
 	        android:layout_width="match_parent"
-	        android:layout_height="match_parent" />
+	        android:layout_height="300dp" />
     </RelativeLayout>
 
 </ScrollView>
