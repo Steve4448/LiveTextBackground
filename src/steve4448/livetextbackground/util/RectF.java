@@ -42,12 +42,4 @@ public class RectF {
 	public static boolean intersects(RectF first, RectF second) {
 		return first.x >= second.x && first.x <= second.x + second.width && first.y >= second.y && first.y <= second.y + second.height;
 	}
-	
-	public android.graphics.RectF toAndroidRect() {
-		return new android.graphics.RectF(x, y, x + width, y + height);
-	}
-	
-	public static android.graphics.RectF toAndroidRect(RectF r) {
-		return new android.graphics.RectF(r.x, r.y, r.x + r.width, r.y + r.height);
-	}
 }

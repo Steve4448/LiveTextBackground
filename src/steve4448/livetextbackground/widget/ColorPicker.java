@@ -95,8 +95,8 @@ public class ColorPicker extends View {
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		canvas.translate(CONTENT_PADDING, CONTENT_PADDING);
-		canvas.drawRect(hueRect.toAndroidRect(), huePaint);
-		canvas.drawRect(satValRect.toAndroidRect(), satValPaint);
+		canvas.drawRect(hueRect.x, hueRect.y, hueRect.x + hueRect.width, hueRect.y + hueRect.height, huePaint);
+		canvas.drawRect(satValRect.x, satValRect.y, satValRect.x + satValRect.width, satValRect.y + satValRect.height, satValPaint);
 		selectorPaint.setColor(Color.BLACK);
 		canvas.drawCircle(hueSelectorLoc.x, hueSelectorLoc.y, HUE_SELECTOR_RADIUS, selectorPaint);
 		canvas.drawRect(valSelectorLoc.x - 5, valSelectorLoc.y, valSelectorLoc.x + 5, valSelectorLoc.y + 30, selectorPaint);

@@ -42,12 +42,4 @@ public class Rect {
 	public static boolean intersects(Rect first, Rect second) {
 		return first.x >= second.x && first.x <= second.x + second.width && first.y >= second.y && first.y <= second.y + second.height;
 	}
-	
-	public android.graphics.Rect toAndroidRect() {
-		return new android.graphics.Rect(x, y, x + width, y + height);
-	}
-	
-	public static android.graphics.Rect toAndroidRect(Rect r) {
-		return new android.graphics.Rect(r.x, r.y, r.x + r.width, r.y + r.height);
-	}
 }
