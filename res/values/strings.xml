@@ -40,7 +40,7 @@
         <item>Center</item>
         <item>Fill</item>
         <item>Fit</item>
-        <item>Strech</item>
+        <item>Stretch</item>
         <item>Tile</item>
     </string-array>
     <string name="label_settings_background_image_modes_default">Center</string>

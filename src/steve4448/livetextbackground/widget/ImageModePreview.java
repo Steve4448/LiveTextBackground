@@ -16,7 +16,7 @@ public class ImageModePreview extends View {
 		CENTER,
 		FILL,
 		FIT,
-		STRECH,
+		STRETCH,
 		TILE
 	};
 	
@@ -101,7 +101,7 @@ public class ImageModePreview extends View {
 				imageRect.set(0, 0, imageRect.width(), drawIntoRect.height());
 				doCenter = true;
 			break;
-			case STRECH:
+			case STRETCH:
 				imageRect.set(0, 0, imageRect.width(), imageRect.height());
 			break;
 			case TILE:
