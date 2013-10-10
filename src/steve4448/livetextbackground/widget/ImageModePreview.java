@@ -1,5 +1,6 @@
 package steve4448.livetextbackground.widget;
 
+import steve4448.livetextbackground.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Toast;
 
 public class ImageModePreview extends View {
 	public static enum ImageMode {
@@ -91,6 +93,7 @@ public class ImageModePreview extends View {
 			break;
 			case TILE:
 				//TODO: this
+				Toast.makeText(getContext(), R.string.placeholder_not_yet_implemented, Toast.LENGTH_SHORT).show();
 			break;
 		}
 		if(doCenter)

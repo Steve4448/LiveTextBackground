@@ -10,10 +10,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class ImageModePreviewPreference extends DialogPreference {
 	public String imageLocation;
+	public String imageMode;
 	
 	public ImageModePreviewPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -21,7 +21,7 @@ public class ImageModePreviewPreference extends DialogPreference {
 		TypedArray extraAttrs = getContext().obtainStyledAttributes(attrs, R.styleable.ImageModePreviewPreference, 0, 0);
 		if(extraAttrs.hasValue(R.styleable.ImageModePreviewPreference_imageLocation))
 			imageLocation = extraAttrs.getString(R.styleable.ImageModePreviewPreference_imageLocation);
-		
+		imageMode = getPersistedString(null);
 		extraAttrs.recycle();
 	}
 	
@@ -31,17 +31,27 @@ public class ImageModePreviewPreference extends DialogPreference {
 		final ImageModePreview iMP = (ImageModePreview)view.findViewById(R.id.imageModePreview);
 		if(imageLocation != null)
 			iMP.setImageLocation(imageLocation);
+		if(imageMode != null)
+			iMP.setImageMode(imageMode);
 		final Spinner modeSpinner = (Spinner)view.findViewById(R.id.spinner1);
 		modeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				iMP.setImageMode(modeSpinner.getSelectedItem().toString());
+				imageMode = modeSpinner.getSelectedItem().toString();
+				iMP.setImageMode(imageMode);
             }
 
 			@Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
 		});
-		Toast.makeText(getContext(), R.string.placeholder_not_yet_implemented, Toast.LENGTH_SHORT).show();
+	}
+	
+	@Override
+	public void onDialogClosed(boolean positiveResult) {
+		super.onDialogClosed(positiveResult);
+		if(positiveResult) {
+			persistString(imageMode);
+		}
 	}
 }
