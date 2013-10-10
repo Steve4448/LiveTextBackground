@@ -60,7 +60,7 @@ public class PreferenceHelper {
 		actualPrefs.registerOnSharedPreferenceChangeListener(changeListener);
 	}
 	
-    public boolean loadSettings(String key) {
+	public boolean loadSettings(String key) {
 		try {
 			Resources r = context.getResources();
 			if(key == null || key == r.getString(R.string.settings_text_size_variance_min))
@@ -90,7 +90,11 @@ public class PreferenceHelper {
 					} else {
 						throw new Exception("Invalid amount of strings.");
 					}
+				} catch(ClassCastException e) {
+					availableStrings = defaultStrings;
+					actualPrefs.edit().putString(r.getString(R.string.settings_text), r.getString(R.string.label_settings_text_default)).commit();
 				} catch(Exception e) {
+					e.printStackTrace();
 					availableStrings = defaultStrings;
 					actualPrefs.edit().putString(r.getString(R.string.settings_text), r.getString(R.string.label_settings_text_default)).commit();
 				}

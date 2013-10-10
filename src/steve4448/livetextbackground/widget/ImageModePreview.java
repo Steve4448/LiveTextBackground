@@ -13,11 +13,7 @@ import android.view.View;
 
 public class ImageModePreview extends View {
 	public static enum ImageMode {
-		CENTER,
-		FILL,
-		FIT,
-		STRETCH,
-		TILE
+		CENTER, FILL, FIT, STRETCH, TILE
 	};
 	
 	private String imageLocation;
@@ -55,12 +51,12 @@ public class ImageModePreview extends View {
 		try {
 			if(image != null)
 				image.recycle();
-	        image = PreferenceHelper.loadImage(getContext(), Uri.parse(imageLocation));
+			image = PreferenceHelper.loadImage(getContext(), Uri.parse(imageLocation));
 			setImageMode(currentMode);
-        } catch(Exception e) {
-        	image = null;
-	        e.printStackTrace();
-        }
+		} catch(Exception e) {
+			image = null;
+			e.printStackTrace();
+		}
 		invalidate();
 	}
 	
@@ -73,7 +69,7 @@ public class ImageModePreview extends View {
 	}
 	
 	public void setImageMode(ImageMode mode) {
-        srcRect.set(0, 0, image == null ? 0 : image.getWidth(), image == null ? 0 : image.getHeight());
+		srcRect.set(0, 0, image == null ? 0 : image.getWidth(), image == null ? 0 : image.getHeight());
 		dstRect.set(0, 0, getWidth(), getHeight());
 		currentMode = mode;
 		getRectsBasedOffMode(currentMode, srcRect, dstRect);
@@ -85,7 +81,7 @@ public class ImageModePreview extends View {
 	}
 	
 	@SuppressLint("DefaultLocale")
-    public static void getRectsBasedOffMode(String mode, Rect imageRect, Rect drawIntoRect) {
+	public static void getRectsBasedOffMode(String mode, Rect imageRect, Rect drawIntoRect) {
 		if(mode == null)
 			return;
 		getRectsBasedOffMode(ImageMode.valueOf(mode.toUpperCase()), imageRect, drawIntoRect);
@@ -94,7 +90,7 @@ public class ImageModePreview extends View {
 	public static void getRectsBasedOffMode(ImageMode mode, Rect imageRect, Rect drawIntoRect) {
 		if(mode == null)
 			return;
-		//System.out.println("(Before) imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
+		// System.out.println("(Before) imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
 		boolean doCenter = false;
 		switch(mode) {
 			case CENTER:
@@ -112,22 +108,22 @@ public class ImageModePreview extends View {
 				imageRect.set(0, 0, imageRect.width(), imageRect.height());
 			break;
 			case TILE:
-				//TODO: this
+			// TODO: this
 			break;
 		}
 		if(doCenter) {
 			drawIntoRect.set(drawIntoRect.width() / 2 - imageRect.width() / 2, drawIntoRect.height() / 2 - imageRect.height() / 2, drawIntoRect.width() / 2 + imageRect.width() / 2, drawIntoRect.height() / 2 + imageRect.height() / 2);
 		}
-		//System.out.println("(After) imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
+		// System.out.println("(After) imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
 	}
 	
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		if(image == null)
-				;//TODO: Draw an image of which indicates the image failed to load?
+			;// TODO: Draw an image of which indicates the image failed to load?
 		else {
-				canvas.drawBitmap(image, srcRect, dstRect, painter);
+			canvas.drawBitmap(image, srcRect, dstRect, painter);
 		}
 	}
 }

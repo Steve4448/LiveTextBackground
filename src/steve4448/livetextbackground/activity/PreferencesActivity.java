@@ -1,6 +1,5 @@
 package steve4448.livetextbackground.activity;
 
-
 import java.io.File;
 
 import steve4448.livetextbackground.R;

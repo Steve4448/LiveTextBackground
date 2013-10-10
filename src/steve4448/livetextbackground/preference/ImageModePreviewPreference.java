@@ -25,31 +25,30 @@ public class ImageModePreviewPreference extends DialogPreference {
 		extraAttrs.recycle();
 	}
 	
-    @Override
+	@Override
 	public void onBindDialogView(View view) {
 		super.onBindDialogView(view);
-		final ImageModePreview iMP = (ImageModePreview)view.findViewById(R.id.imageModePreview);
-		final Spinner modeSpinner = (Spinner)view.findViewById(R.id.spinner1);
+		final ImageModePreview iMP = (ImageModePreview) view.findViewById(R.id.imageModePreview);
+		final Spinner modeSpinner = (Spinner) view.findViewById(R.id.spinner1);
 		imageMode = getPersistedString(null);
-				
+		
 		if(imageLocation != null)
 			iMP.setImageLocation(imageLocation);
 		if(imageMode != null) {
 			iMP.setImageMode(imageMode);
 			@SuppressWarnings("unchecked")
-            ArrayAdapter<String> d = ((ArrayAdapter<String>)modeSpinner.getAdapter());
+			ArrayAdapter<String> d = ((ArrayAdapter<String>) modeSpinner.getAdapter());
 			modeSpinner.setSelection(d.getPosition(imageMode));
 		}
 		modeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				imageMode = modeSpinner.getSelectedItem().toString();
 				iMP.setImageMode(imageMode);
-            }
-
+			}
+			
 			@Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
+			public void onNothingSelected(AdapterView<?> arg0) {}
 		});
 	}
 	
