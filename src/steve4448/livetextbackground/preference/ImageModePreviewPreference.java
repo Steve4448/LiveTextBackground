@@ -9,11 +9,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 public class ImageModePreviewPreference extends DialogPreference {
 	public String imageLocation;
-	public String imageMode;
+	public String imageMode = null;
 	
 	public ImageModePreviewPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -21,19 +22,24 @@ public class ImageModePreviewPreference extends DialogPreference {
 		TypedArray extraAttrs = getContext().obtainStyledAttributes(attrs, R.styleable.ImageModePreviewPreference, 0, 0);
 		if(extraAttrs.hasValue(R.styleable.ImageModePreviewPreference_imageLocation))
 			imageLocation = extraAttrs.getString(R.styleable.ImageModePreviewPreference_imageLocation);
-		imageMode = getPersistedString(null);
 		extraAttrs.recycle();
 	}
 	
-	@Override
+    @Override
 	public void onBindDialogView(View view) {
 		super.onBindDialogView(view);
 		final ImageModePreview iMP = (ImageModePreview)view.findViewById(R.id.imageModePreview);
+		final Spinner modeSpinner = (Spinner)view.findViewById(R.id.spinner1);
+		imageMode = getPersistedString(null);
+				
 		if(imageLocation != null)
 			iMP.setImageLocation(imageLocation);
-		if(imageMode != null)
+		if(imageMode != null) {
 			iMP.setImageMode(imageMode);
-		final Spinner modeSpinner = (Spinner)view.findViewById(R.id.spinner1);
+			@SuppressWarnings("unchecked")
+            ArrayAdapter<String> d = ((ArrayAdapter<String>)modeSpinner.getAdapter());
+			modeSpinner.setSelection(d.getPosition(imageMode));
+		}
 		modeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {

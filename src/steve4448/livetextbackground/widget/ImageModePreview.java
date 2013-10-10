@@ -70,12 +70,10 @@ public class ImageModePreview extends View {
 	}
 	
 	public void setImageMode(ImageMode mode) {
-        srcRect = new Rect(0, 0, image.getWidth(), image.getHeight());
+        srcRect.set(0, 0, image == null ? 0 : image.getWidth(), image == null ? 0 : image.getHeight());
 		dstRect.set(0, 0, getWidth(), getHeight());
 		currentMode = mode;
-		Rect[] r = getRectsBasedOffMode(currentMode, new Rect(0, 0, image.getWidth(), image.getHeight()), dstRect);
-		srcRect = r[0];
-		dstRect = r[1];
+		getRectsBasedOffMode(currentMode, srcRect, dstRect);
 		invalidate();
 	}
 	
@@ -84,34 +82,36 @@ public class ImageModePreview extends View {
 	}
 	
 	@SuppressLint("DefaultLocale")
-    public static Rect[] getRectsBasedOffMode(String mode, Rect imageRect, Rect drawIntoRect) {
-		return getRectsBasedOffMode(ImageMode.valueOf(mode.toUpperCase()), imageRect, drawIntoRect);
+    public static void getRectsBasedOffMode(String mode, Rect imageRect, Rect drawIntoRect) {
+		getRectsBasedOffMode(ImageMode.valueOf(mode.toUpperCase()), imageRect, drawIntoRect);
 	}
 	
-	public static Rect[] getRectsBasedOffMode(ImageMode mode, Rect srcRect, Rect dstRect) {
+	public static void getRectsBasedOffMode(ImageMode mode, Rect imageRect, Rect drawIntoRect) {
+		System.out.println("imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
 		boolean doCenter = false;
 		switch(mode) {
 			case CENTER:
 				doCenter = true;
 			break;
 			case FILL:
-				srcRect.set(0, 0, dstRect.width(), srcRect.height());
+				imageRect.set(0, 0, drawIntoRect.width(), imageRect.height());
 				doCenter = true;
 			break;
 			case FIT:
-				srcRect.set(0, 0, srcRect.width(), dstRect.height());
+				imageRect.set(0, 0, imageRect.width(), drawIntoRect.height());
 				doCenter = true;
 			break;
 			case STRECH:
-				srcRect.set(0, 0, srcRect.width(), srcRect.height());
+				imageRect.set(0, 0, imageRect.width(), imageRect.height());
 			break;
 			case TILE:
 				//TODO: this
 			break;
 		}
-		if(doCenter)
-			dstRect.set(dstRect.width() / 2 - srcRect.width() / 2, dstRect.height() / 2 - srcRect.height() / 2, dstRect.width() / 2 + srcRect.width() / 2, dstRect.height() / 2 + srcRect.height() / 2);
-		return new Rect[] {srcRect, dstRect};
+		if(doCenter) {
+			drawIntoRect.set(drawIntoRect.width() / 2 - imageRect.width() / 2, drawIntoRect.height() / 2 - imageRect.height() / 2, drawIntoRect.width() / 2 + imageRect.width() / 2, drawIntoRect.height() / 2 + imageRect.height() / 2);
+		}
+		System.out.println("imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
 	}
 	
 	@Override

@@ -1,11 +1,13 @@
 package steve4448.livetextbackground.util;
 
 import steve4448.livetextbackground.R;
+import steve4448.livetextbackground.widget.ImageModePreview;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -25,12 +27,16 @@ public class PreferenceHelper {
 	public boolean collisionEnabled;
 	public boolean applyShadow;
 	public int desiredFPS;
+	public Rect imageRect;
+	public Rect backgroundRect;
 	public boolean backgroundImageEnabled;
 	public Bitmap backgroundImage;
 	public String backgroundMode;
 	public boolean tried = false;
 	
 	public PreferenceHelper(final Context context) {
+		imageRect = new Rect();
+		backgroundRect = new Rect();
 		this.context = context;
 		if(actualPrefs != null) {
 			actualPrefs.unregisterOnSharedPreferenceChangeListener(changeListener);
@@ -127,8 +133,9 @@ public class PreferenceHelper {
 					backgroundImage.recycle();
 				try {
 					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
-					if(uri != null)
+					if(uri != null) {
 						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
+					}
 				} catch(Exception e) {
 					e.printStackTrace();
 					backgroundImage = null;
@@ -142,6 +149,7 @@ public class PreferenceHelper {
 					backgroundMode = r.getString(R.string.label_settings_background_image_modes_default);
 					actualPrefs.edit().putString(r.getString(R.string.settings_background_mode), r.getString(R.string.label_settings_background_image_modes_default)).commit();
 				}
+				doResize();
 			}
 			return true;
 		} catch(Exception e) {
@@ -156,6 +164,15 @@ public class PreferenceHelper {
 				return fixed;
 			} else
 				return false;
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+    public void doResize() {
+		if(backgroundImage != null) {
+			imageRect.set(0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
+			backgroundRect.set(0, 0, context.getWallpaperDesiredMinimumWidth(), context.getWallpaperDesiredMinimumHeight());
+			ImageModePreview.getRectsBasedOffMode(backgroundMode, imageRect, backgroundRect);
 		}
 	}
 }
