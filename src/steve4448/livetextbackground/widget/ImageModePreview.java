@@ -87,7 +87,7 @@ public class ImageModePreview extends View {
 	}
 	
 	public static void getRectsBasedOffMode(ImageMode mode, Rect imageRect, Rect drawIntoRect) {
-		System.out.println("imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
+		//System.out.println("(Before) imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
 		boolean doCenter = false;
 		switch(mode) {
 			case CENTER:
@@ -111,7 +111,7 @@ public class ImageModePreview extends View {
 		if(doCenter) {
 			drawIntoRect.set(drawIntoRect.width() / 2 - imageRect.width() / 2, drawIntoRect.height() / 2 - imageRect.height() / 2, drawIntoRect.width() / 2 + imageRect.width() / 2, drawIntoRect.height() / 2 + imageRect.height() / 2);
 		}
-		System.out.println("imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
+		//System.out.println("(After) imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
 	}
 	
 	@Override
