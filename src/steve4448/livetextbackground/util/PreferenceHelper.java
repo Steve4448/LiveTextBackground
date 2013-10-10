@@ -21,6 +21,8 @@ public class PreferenceHelper {
 	private static SharedPreferences actualPrefs;
 	private static OnSharedPreferenceChangeListener changeListener;
 	private Context context;
+	public int width = 0;
+	public int height = 0;
 	public int textSizeMin;
 	public int textSizeMax;
 	public String[] availableStrings;
@@ -167,6 +169,8 @@ public class PreferenceHelper {
 	}
 	
     public void doResize(int width, int height) {
+    	this.width = width;
+    	this.height = height;
 		if(backgroundImage != null) {
 			imageRect.set(0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
 			backgroundRect.set(0, 0, width, height);

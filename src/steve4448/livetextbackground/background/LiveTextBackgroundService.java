@@ -133,7 +133,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				Rect bounds = new Rect();
 				paintText.setTextSize(size);
 				paintText.getTextBounds(text, 0, text.length(), bounds);
-				float x = (float) (Math.random() * getDesiredMinimumWidth());
+				float x = (float) (Math.random() * pref.width);
 				TextObject newObj = new TextObject(text, new RectF(x, 0, x + bounds.width(), bounds.height()), size, col);
 				newObj.doCache(paintText, null);
 				textObj.add(newObj);
@@ -153,7 +153,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				}
 				t.velocityY += 0.01;
 				t.dimen.offset(t.velocityX, t.velocityY);
-				if(t.dimen.top > getDesiredMinimumHeight() || t.dimen.left > getDesiredMinimumWidth() || t.dimen.right < 0) {
+				if(t.dimen.top > pref.height || t.dimen.left > pref.width || t.dimen.right < 0) {
 					t.cachedText.recycle();
 					textObj.remove(t);
 					continue;
