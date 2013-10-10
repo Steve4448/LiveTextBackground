@@ -53,7 +53,7 @@ public class ImageModePreview extends View {
 		this.imageLocation = imageLocation;
 		try {
 	        image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), Uri.parse(imageLocation));
-	        srcRect = new Rect(0, 0, image.getWidth(), image.getHeight());
+			setImageMode(currentMode);
         } catch(Exception e) {
 	        e.printStackTrace();
         }
@@ -69,26 +69,32 @@ public class ImageModePreview extends View {
 	}
 	
 	public void setImageMode(ImageMode mode) {
+        srcRect = new Rect(0, 0, image.getWidth(), image.getHeight());
 		dstRect.set(0, 0, getWidth(), getHeight());
 		currentMode = mode;
-		//TODO: 
+		boolean doCenter = false;
 		switch(currentMode) {
 			case CENTER:
 				srcRect.set(0, 0, image.getWidth(), image.getHeight());
-				dstRect.set(dstRect.width() / 2 - image.getWidth() / 2, dstRect.height() / 2 - image.getHeight() / 2, dstRect.width() / 2 + image.getWidth() / 2, dstRect.height() / 2 + image.getHeight() / 2);
+				doCenter = true;
 			break;
 			case FILL:
-				srcRect.set(0, 0, image.getWidth(), image.getHeight() - dstRect.height());
+				srcRect.set(0, 0, dstRect.width(), image.getHeight());
+				doCenter = true;
 			break;
 			case FIT:
-				srcRect.set(0, 0, image.getWidth() - dstRect.width(), image.getHeight());
+				srcRect.set(0, 0, image.getWidth(), dstRect.height());
+				doCenter = true;
 			break;
 			case STRECH:
 				srcRect.set(0, 0, image.getWidth(), image.getHeight());
 			break;
 			case TILE:
+				//TODO: this
 			break;
 		}
+		if(doCenter)
+			dstRect.set(dstRect.width() / 2 - srcRect.width() / 2, dstRect.height() / 2 - srcRect.height() / 2, dstRect.width() / 2 + srcRect.width() / 2, dstRect.height() / 2 + srcRect.height() / 2);
 		invalidate();
 	}
 	
