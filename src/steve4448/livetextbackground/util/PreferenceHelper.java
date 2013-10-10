@@ -138,7 +138,7 @@ public class PreferenceHelper {
 					}
 				}
 			}
-			if(key == null || key == r.getString(R.string.settings_background_image)) {
+			if(key == null || key == r.getString(R.string.settings_background_image) || backgroundImageEnabled) {
 				if(backgroundImage != null) {
 					backgroundImage.recycle();
 					backgroundImage = null;
