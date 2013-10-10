@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 public class PreferenceHelper {
 	public static final String LIVE_TEXT_BACKGROUND_PATH = "LiveTextBackground";
-	public static final String BACKGROUND_FILE = "The Background.png";
 	public static final String PREFERENCE_NAME = "livetextbackground_settings";
 	public static final int PHOTO_PICKER_REQUEST_CODE = 1;
 	private static SharedPreferences actualPrefs;
@@ -135,14 +134,14 @@ public class PreferenceHelper {
 					backgroundImage.recycle();
 				try {
 					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
-					if(uri != null) {
+					if(uri != null)
 						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
-					}
 				} catch(Exception e) {
 					e.printStackTrace();
 					backgroundImage = null;
 					Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
 				}
+				setBackgroundRects();
 			}
 			if(key == null || key == r.getString(R.string.settings_background_mode)) {
 				try {
@@ -151,6 +150,7 @@ public class PreferenceHelper {
 					backgroundMode = r.getString(R.string.label_settings_background_image_modes_default);
 					actualPrefs.edit().putString(r.getString(R.string.settings_background_mode), r.getString(R.string.label_settings_background_image_modes_default)).commit();
 				}
+				setBackgroundRects();
 			}
 			return true;
 		} catch(Exception e) {
@@ -171,10 +171,14 @@ public class PreferenceHelper {
     public void doResize(int width, int height) {
     	this.width = width;
     	this.height = height;
-		if(backgroundImage != null) {
+    	setBackgroundRects();
+	}
+    
+    public void setBackgroundRects() {
+    	if(backgroundImage != null) {
 			imageRect.set(0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
 			backgroundRect.set(0, 0, width, height);
 			ImageModePreview.getRectsBasedOffMode(backgroundMode, imageRect, backgroundRect);
 		}
-	}
+    }
 }

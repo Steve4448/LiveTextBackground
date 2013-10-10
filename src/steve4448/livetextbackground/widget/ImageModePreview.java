@@ -83,10 +83,14 @@ public class ImageModePreview extends View {
 	
 	@SuppressLint("DefaultLocale")
     public static void getRectsBasedOffMode(String mode, Rect imageRect, Rect drawIntoRect) {
+		if(mode == null)
+			return;
 		getRectsBasedOffMode(ImageMode.valueOf(mode.toUpperCase()), imageRect, drawIntoRect);
 	}
 	
 	public static void getRectsBasedOffMode(ImageMode mode, Rect imageRect, Rect drawIntoRect) {
+		if(mode == null)
+			return;
 		//System.out.println("(Before) imageRect: " + imageRect.toString() + ", drawIntoRect: " + drawIntoRect.toString());
 		boolean doCenter = false;
 		switch(mode) {
