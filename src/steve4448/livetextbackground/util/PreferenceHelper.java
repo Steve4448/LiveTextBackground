@@ -149,7 +149,6 @@ public class PreferenceHelper {
 					backgroundMode = r.getString(R.string.label_settings_background_image_modes_default);
 					actualPrefs.edit().putString(r.getString(R.string.settings_background_mode), r.getString(R.string.label_settings_background_image_modes_default)).commit();
 				}
-				doResize();
 			}
 			return true;
 		} catch(Exception e) {
@@ -167,11 +166,10 @@ public class PreferenceHelper {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
-    public void doResize() {
+    public void doResize(int width, int height) {
 		if(backgroundImage != null) {
 			imageRect.set(0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
-			backgroundRect.set(0, 0, context.getWallpaperDesiredMinimumWidth(), context.getWallpaperDesiredMinimumHeight());
+			backgroundRect.set(0, 0, width, height);
 			ImageModePreview.getRectsBasedOffMode(backgroundMode, imageRect, backgroundRect);
 		}
 	}
