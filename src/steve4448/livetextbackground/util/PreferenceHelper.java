@@ -1,5 +1,7 @@
 package steve4448.livetextbackground.util;
 
+import java.io.InputStream;
+
 import steve4448.livetextbackground.R;
 import steve4448.livetextbackground.widget.ImageModePreview;
 import android.content.Context;
@@ -7,10 +9,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.widget.Toast;
 
 public class PreferenceHelper {
@@ -32,6 +34,7 @@ public class PreferenceHelper {
 	public Rect backgroundRect;
 	public boolean backgroundImageEnabled;
 	public Bitmap backgroundImage;
+	public Uri backgroundImageUri;
 	public String backgroundMode;
 	public boolean tried = false;
 	
@@ -57,7 +60,7 @@ public class PreferenceHelper {
 		actualPrefs.registerOnSharedPreferenceChangeListener(changeListener);
 	}
 	
-	public boolean loadSettings(String key) {
+    public boolean loadSettings(String key) {
 		try {
 			Resources r = context.getResources();
 			if(key == null || key == r.getString(R.string.settings_text_size_variance_min))
@@ -128,18 +131,25 @@ public class PreferenceHelper {
 					backgroundImageEnabled = r.getBoolean(R.bool.label_settings_background_enabled);
 					actualPrefs.edit().putBoolean(r.getString(R.string.settings_enable_background_image), r.getBoolean(R.bool.label_settings_background_enabled)).commit();
 				}
+				if(!backgroundImageEnabled) {
+					if(backgroundImage != null) {
+						backgroundImage.recycle();
+						backgroundImage = null;
+					}
+				}
 			}
-			if((key == null && backgroundImageEnabled) || (key == r.getString(R.string.settings_background_image) && backgroundImageEnabled)) {
-				if(backgroundImage != null)
+			if(key == null || key == r.getString(R.string.settings_background_image)) {
+				if(backgroundImage != null) {
 					backgroundImage.recycle();
-				try {
-					String uri = actualPrefs.getString(r.getString(R.string.settings_background_image), null);
-					if(uri != null)
-						backgroundImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
-				} catch(Exception e) {
-					e.printStackTrace();
 					backgroundImage = null;
-					Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
+				}
+				try {
+					backgroundImageUri = Uri.parse(actualPrefs.getString(r.getString(R.string.settings_background_image), null));
+					if(backgroundImageEnabled)
+						backgroundImage = loadImage(context, backgroundImageUri);
+				} catch(Exception e) {
+					backgroundImageUri = null;
+					actualPrefs.edit().putString(r.getString(R.string.settings_background_image), null).commit();
 				}
 				setBackgroundRects();
 			}
@@ -168,17 +178,33 @@ public class PreferenceHelper {
 		}
 	}
 	
-    public void doResize(int width, int height) {
-    	this.width = width;
-    	this.height = height;
-    	setBackgroundRects();
+	public void doResize(int width, int height) {
+		this.width = width;
+		this.height = height;
+		setBackgroundRects();
 	}
-    
-    public void setBackgroundRects() {
-    	if(backgroundImage != null) {
+	
+	public static Bitmap loadImage(Context context, Uri imageUri) {
+		try {
+			InputStream input = context.getContentResolver().openInputStream(imageUri);
+			BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+			bitmapOptions.inDither = true;
+			input = context.getContentResolver().openInputStream(imageUri);
+			Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+			input.close();
+			return bitmap;
+		} catch(Exception e) {
+			e.printStackTrace();
+			Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_LONG).show();
+			return null;
+		}
+	}
+	
+	public void setBackgroundRects() {
+		if(backgroundImageEnabled && backgroundImage != null) {
 			imageRect.set(0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
 			backgroundRect.set(0, 0, width, height);
 			ImageModePreview.getRectsBasedOffMode(backgroundMode, imageRect, backgroundRect);
 		}
-    }
+	}
 }

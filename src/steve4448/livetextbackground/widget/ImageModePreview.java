@@ -1,5 +1,6 @@
 package steve4448.livetextbackground.widget;
 
+import steve4448.livetextbackground.util.PreferenceHelper;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -53,9 +53,12 @@ public class ImageModePreview extends View {
 	public void setImageLocation(String imageLocation) {
 		this.imageLocation = imageLocation;
 		try {
-	        image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), Uri.parse(imageLocation));
+			if(image != null)
+				image.recycle();
+	        image = PreferenceHelper.loadImage(getContext(), Uri.parse(imageLocation));
 			setImageMode(currentMode);
         } catch(Exception e) {
+        	image = null;
 	        e.printStackTrace();
         }
 		invalidate();

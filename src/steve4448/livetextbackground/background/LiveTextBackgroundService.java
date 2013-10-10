@@ -209,6 +209,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				canvas = holder.lockCanvas();
 				if(canvas != null) {
 					canvas.drawColor(Color.DKGRAY);
+					//System.out.println("" + pref.backgroundImage + ", " + pref.imageRect + ", " + pref.backgroundRect);
 					if(pref.backgroundImageEnabled && pref.backgroundImage != null && !pref.backgroundImage.isRecycled())
 						canvas.drawBitmap(pref.backgroundImage, pref.imageRect, pref.backgroundRect, paintBackground);
 					for(ExplosionParticleGroup p : textExplObj) {

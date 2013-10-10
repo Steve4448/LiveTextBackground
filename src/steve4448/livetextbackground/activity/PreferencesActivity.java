@@ -1,18 +1,26 @@
 package steve4448.livetextbackground.activity;
 
+
+import java.io.File;
+
 import steve4448.livetextbackground.R;
 import steve4448.livetextbackground.preference.ImageModePreviewPreference;
 import steve4448.livetextbackground.util.PreferenceHelper;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 public class PreferencesActivity extends PreferenceActivity {
-	private static ImageModePreviewPreference imageModePreviewPreference;
+	private Uri currentBackgroundUri;
+	private ImageModePreviewPreference imageModePreviewPreference;
 	
 	@SuppressWarnings("deprecation")
 	@Override
@@ -26,8 +34,12 @@ public class PreferencesActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				try {
+					currentBackgroundUri = getBackgroundUri();
 					Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 					photoPickerIntent.setType("image/*");
+					photoPickerIntent.putExtra("crop", "true");
+					photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentBackgroundUri);
+					photoPickerIntent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
 					startActivityForResult(Intent.createChooser(photoPickerIntent, getResources().getString(R.string.label_settins_select_an_image)), PreferenceHelper.PHOTO_PICKER_REQUEST_CODE);
 				} catch(ActivityNotFoundException e) {
 					e.printStackTrace();
@@ -38,7 +50,7 @@ public class PreferencesActivity extends PreferenceActivity {
 		});
 	}
 	
-	/*private static Uri getBackgroundUri() {
+	private static Uri getBackgroundUri() {
 		return Uri.fromFile(getBackgroundFile());
 	}
 	
@@ -49,23 +61,23 @@ public class PreferencesActivity extends PreferenceActivity {
 				File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + PreferenceHelper.LIVE_TEXT_BACKGROUND_PATH);
 				System.out.println(directory.getAbsolutePath());
 				directory.mkdirs();
-				File file = new File(directory, System.currentTimeMillis() + ".png");
+				File file = new File(directory, "LiveTextBackground-" + System.currentTimeMillis() + ".png");
 				System.out.println(file.getAbsolutePath());
 				file.createNewFile();
 				return file;
 			}
-		} catch(IOException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-	}*/
+	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == PreferenceHelper.PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
 			try {
-				String tmpUri = data.getData().toString();
+				String tmpUri = currentBackgroundUri.toString();
 				getSharedPreferences(PreferenceHelper.PREFERENCE_NAME, MODE_PRIVATE).edit().putString(getResources().getString(R.string.settings_background_image), tmpUri).commit();
 				imageModePreviewPreference.imageLocation = tmpUri;
 			} catch(Exception e) {
