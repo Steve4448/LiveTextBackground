@@ -27,6 +27,7 @@ public class PreferenceHelper {
 	public int desiredFPS;
 	public boolean backgroundImageEnabled;
 	public Bitmap backgroundImage;
+	public String backgroundMode;
 	public boolean tried = false;
 	
 	public PreferenceHelper(final Context context) {
@@ -132,6 +133,14 @@ public class PreferenceHelper {
 					e.printStackTrace();
 					backgroundImage = null;
 					Toast.makeText(context, R.string.toast_could_not_load_image_picker_data, Toast.LENGTH_SHORT).show();
+				}
+			}
+			if(key == null || key == r.getString(R.string.settings_background_mode)) {
+				try {
+					backgroundMode = actualPrefs.getString(r.getString(R.string.settings_background_mode), r.getString(R.string.label_settings_background_image_modes_default));
+				} catch(ClassCastException e) {
+					backgroundMode = r.getString(R.string.label_settings_background_image_modes_default);
+					actualPrefs.edit().putString(r.getString(R.string.settings_background_mode), r.getString(R.string.label_settings_background_image_modes_default)).commit();
 				}
 			}
 			return true;

@@ -1,6 +1,6 @@
 package steve4448.livetextbackground.widget;
 
-import steve4448.livetextbackground.R;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Toast;
 
 public class ImageModePreview extends View {
 	public static enum ImageMode {
@@ -74,35 +73,45 @@ public class ImageModePreview extends View {
         srcRect = new Rect(0, 0, image.getWidth(), image.getHeight());
 		dstRect.set(0, 0, getWidth(), getHeight());
 		currentMode = mode;
-		boolean doCenter = false;
-		switch(currentMode) {
-			case CENTER:
-				srcRect.set(0, 0, image.getWidth(), image.getHeight());
-				doCenter = true;
-			break;
-			case FILL:
-				srcRect.set(0, 0, dstRect.width(), image.getHeight());
-				doCenter = true;
-			break;
-			case FIT:
-				srcRect.set(0, 0, image.getWidth(), dstRect.height());
-				doCenter = true;
-			break;
-			case STRECH:
-				srcRect.set(0, 0, image.getWidth(), image.getHeight());
-			break;
-			case TILE:
-				//TODO: this
-				Toast.makeText(getContext(), R.string.placeholder_not_yet_implemented, Toast.LENGTH_SHORT).show();
-			break;
-		}
-		if(doCenter)
-			dstRect.set(dstRect.width() / 2 - srcRect.width() / 2, dstRect.height() / 2 - srcRect.height() / 2, dstRect.width() / 2 + srcRect.width() / 2, dstRect.height() / 2 + srcRect.height() / 2);
+		Rect[] r = getRectsBasedOffMode(currentMode, new Rect(0, 0, image.getWidth(), image.getHeight()), dstRect);
+		srcRect = r[0];
+		dstRect = r[1];
 		invalidate();
 	}
 	
 	public ImageMode getImageMode() {
 		return currentMode;
+	}
+	
+	@SuppressLint("DefaultLocale")
+    public static Rect[] getRectsBasedOffMode(String mode, Rect imageRect, Rect drawIntoRect) {
+		return getRectsBasedOffMode(ImageMode.valueOf(mode.toUpperCase()), imageRect, drawIntoRect);
+	}
+	
+	public static Rect[] getRectsBasedOffMode(ImageMode mode, Rect srcRect, Rect dstRect) {
+		boolean doCenter = false;
+		switch(mode) {
+			case CENTER:
+				doCenter = true;
+			break;
+			case FILL:
+				srcRect.set(0, 0, dstRect.width(), srcRect.height());
+				doCenter = true;
+			break;
+			case FIT:
+				srcRect.set(0, 0, srcRect.width(), dstRect.height());
+				doCenter = true;
+			break;
+			case STRECH:
+				srcRect.set(0, 0, srcRect.width(), srcRect.height());
+			break;
+			case TILE:
+				//TODO: this
+			break;
+		}
+		if(doCenter)
+			dstRect.set(dstRect.width() / 2 - srcRect.width() / 2, dstRect.height() / 2 - srcRect.height() / 2, dstRect.width() / 2 + srcRect.width() / 2, dstRect.height() / 2 + srcRect.height() / 2);
+		return new Rect[] {srcRect, dstRect};
 	}
 	
 	@Override

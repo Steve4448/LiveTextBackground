@@ -8,6 +8,7 @@ import steve4448.livetextbackground.background.object.ExplosionParticle;
 import steve4448.livetextbackground.background.object.ExplosionParticleGroup;
 import steve4448.livetextbackground.background.object.TextObject;
 import steve4448.livetextbackground.util.PreferenceHelper;
+import steve4448.livetextbackground.widget.ImageModePreview;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -30,6 +31,8 @@ public class LiveTextBackgroundService extends WallpaperService {
 		private Paint paintText;
 		private Paint paintRect;
 		private Paint paintRectShadow;
+		private Rect imageRect;
+		private Rect backgroundRect;
 		private CopyOnWriteArrayList<TextObject> textObj = new CopyOnWriteArrayList<TextObject>();
 		private CopyOnWriteArrayList<ExplosionParticleGroup> textExplObj = new CopyOnWriteArrayList<ExplosionParticleGroup>();
 		private Timer logicTimer;
@@ -58,6 +61,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 			paintText.setAntiAlias(true);
 			paintText.setTypeface(Typeface.SANS_SERIF);
 			paintText.setStyle(Paint.Style.FILL);
+			imageRect = backgroundRect = new Rect();
 		}
 		
 		@Override
@@ -100,6 +104,10 @@ public class LiveTextBackgroundService extends WallpaperService {
 			if(on) {
 				if(logicTimer != null)
 					setupLogicHandler(false);
+				
+				Rect[] rects = ImageModePreview.getRectsBasedOffMode(pref.backgroundMode, new Rect(0, 0, pref.backgroundImage.getWidth(), pref.backgroundImage.getHeight()), new Rect(0, 0, getDesiredMinimumWidth(), getDesiredMinimumHeight()));
+				imageRect = rects[0];
+				backgroundRect = rects[1];
 				
 				logicTimer = new Timer();
 				logicTimer.schedule(logicTimerTask = new TimerTask() {
@@ -209,7 +217,7 @@ public class LiveTextBackgroundService extends WallpaperService {
 				if(canvas != null) {
 					canvas.drawColor(Color.DKGRAY);
 					if(pref.backgroundImageEnabled && pref.backgroundImage != null && !pref.backgroundImage.isRecycled())
-						canvas.drawBitmap(pref.backgroundImage, 0, 0, paintBackground);
+						canvas.drawBitmap(pref.backgroundImage, imageRect, backgroundRect, paintBackground);
 					for(ExplosionParticleGroup p : textExplObj) {
 						paintRect.setColor(p.color);
 						paintRect.setAlpha(p.alpha);
