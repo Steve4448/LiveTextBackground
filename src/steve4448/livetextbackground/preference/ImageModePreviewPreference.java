@@ -29,7 +29,7 @@ public class ImageModePreviewPreference extends DialogPreference {
 	public void onBindDialogView(View view) {
 		super.onBindDialogView(view);
 		final ImageModePreview iMP = (ImageModePreview) view.findViewById(R.id.imageModePreview);
-		final Spinner modeSpinner = (Spinner) view.findViewById(R.id.spinner1);
+		final Spinner modeSpinner = (Spinner) view.findViewById(R.id.imageModeSpinner);
 		imageMode = getPersistedString(null);
 		
 		if(imageLocation != null)
